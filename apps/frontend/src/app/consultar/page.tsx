@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, Download, FileText, AlertCircle, CheckCircle } from 'lucide-react';
+import { Search, FileText, AlertCircle, CheckCircle, Bike, Calendar, Hash, Activity, ExternalLink, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import PublicWrapper from '../components/public-wrapper';
@@ -23,6 +23,34 @@ interface CensusInfo {
   certificate?: Certificate;
 }
 
+const STATUS_MAP: Record<string, { label: string; color: string; dot: string }> = {
+  BORRADOR:            { label: 'En proceso',          color: 'bg-amber-100  text-amber-800  border-amber-200',  dot: 'bg-amber-500'  },
+  FINALIZADO:          { label: 'Finalizado',           color: 'bg-green-100  text-green-800  border-green-200',  dot: 'bg-green-500'  },
+  CERTIFICADO_GENERADO:{ label: 'Certificado generado', color: 'bg-blue-100   text-blue-800   border-blue-200',   dot: 'bg-blue-500'   },
+};
+
+function StatusBadge({ estado }: { estado: string }) {
+  const s = STATUS_MAP[estado] ?? { label: estado, color: 'bg-gray-100 text-gray-700 border-gray-200', dot: 'bg-gray-400' };
+  return (
+    <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${s.color}`}>
+      <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
+      {s.label}
+    </span>
+  );
+}
+
+function InfoRow({ icon, label, value }: { icon: React.ReactNode; label: string; value: React.ReactNode }) {
+  return (
+    <div className="flex items-start gap-3 py-3.5 border-b border-gray-100 last:border-0">
+      <div className="mt-0.5 text-gray-400 flex-shrink-0">{icon}</div>
+      <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+        <span className="text-sm text-gray-500">{label}</span>
+        <span className="text-sm font-semibold text-gray-900">{value}</span>
+      </div>
+    </div>
+  );
+}
+
 function ConsultarPage() {
   const [placa, setPlaca] = useState('');
   const [censusInfo, setCensusInfo] = useState<CensusInfo | null>(null);
@@ -34,242 +62,207 @@ function ConsultarPage() {
     setError('');
     setCensusInfo(null);
 
-    if (!placa.trim()) {
-      setError('Ingrese una placa para buscar');
+    const trimmed = placa.trim().toUpperCase();
+    if (!trimmed) {
+      setError('Ingresa el número de placa de tu vehículo');
       return;
     }
 
     setIsLoading(true);
 
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/public/censos/placa/${placa.toUpperCase()}`,
-      );
+      // Use Next.js proxy so the request stays same-origin
+      const response = await fetch(`/api/public/censos/placa/${trimmed}`);
 
       if (!response.ok) {
         if (response.status === 404) {
-          setError('No se encontró un censo asociado a esta placa');
+          setError('No encontramos un censo registrado para esa placa. Verifica que sea correcta.');
         } else {
-          setError('Error al buscar el censo');
+          setError('Ocurrió un error al consultar. Intenta de nuevo en un momento.');
         }
         return;
       }
 
-      const data = await response.json();
-      setCensusInfo(data);
-    } catch (err) {
-      setError('Error de conexión con el servidor');
+      setCensusInfo(await response.json());
+    } catch {
+      setError('No pudimos conectar con el servidor. Verifica tu conexión e intenta de nuevo.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleDownloadCertificate = async (certificateId: string) => {
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/public/validar/${censusInfo?.certificate?.codigoCertificado}`,
-      );
-
-      if (response.ok) {
-        // For public access, we'll open the validation page instead
-        window.open(`/validar/${censusInfo?.certificate?.codigoCertificado}`, '_blank');
-      }
-    } catch (err) {
-      console.error('Error downloading certificate', err);
-    }
-  };
-
-  const getStatusBadge = (estado: string) => {
-    const styles: Record<string, string> = {
-      BORRADOR: 'bg-yellow-100 text-yellow-800',
-      FINALIZADO: 'bg-green-100 text-green-800',
-      CERTIFICADO_GENERADO: 'bg-blue-100 text-blue-800',
-    };
-
-    const labels: Record<string, string> = {
-      BORRADOR: 'Borrador',
-      FINALIZADO: 'Finalizado',
-      CERTIFICADO_GENERADO: 'Certificado Generado',
-    };
-
-    return (
-      <span
-        className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-          styles[estado] || 'bg-gray-100 text-gray-800'
-        }`}
-      >
-        {labels[estado] || estado}
-      </span>
-    );
-  };
-
-  const getTipoLabel = (tipo: string) => {
-    return tipo === 'MOTOCICLETA' ? 'Motocicleta' : 'Motocarro';
-  };
+  const getTipoLabel = (tipo: string) =>
+    tipo === 'MOTOCICLETA' ? 'Motocicleta' : 'Motocarro';
 
   const getActividadLabel = (actividad?: string) => {
-    if (!actividad) return 'N/A';
+    if (!actividad) return 'No especificada';
     return actividad === 'MOTOTAXI' ? 'Mototaxi' : 'Familiar';
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
-      {/* Search Form */}
-      <div className="bg-white rounded-lg shadow p-6 mb-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">
-          Consultar Censo por Placa
-        </h2>
-        
+    <div className="max-w-xl mx-auto">
+
+      {/* Hero */}
+      <div className="text-center mb-8">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600 shadow-lg shadow-blue-200 mb-4">
+          <Search className="w-8 h-8 text-white" />
+        </div>
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          Consulta tu censo
+        </h1>
+        <p className="text-gray-500 text-sm leading-relaxed max-w-sm mx-auto">
+          Ingresa la placa de tu vehículo para verificar si está registrado en el censo municipal de motos de Sabanalarga.
+        </p>
+      </div>
+
+      {/* Search card */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-5">
         <form onSubmit={handleSearch} className="space-y-4">
           <div>
-            <label htmlFor="placa" className="block text-sm font-medium text-gray-700 mb-2">
-              Número de Placa
+            <label htmlFor="placa" className="block text-sm font-semibold text-gray-700 mb-2">
+              Número de placa
             </label>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
               <input
                 type="text"
                 id="placa"
                 value={placa}
                 onChange={(e) => setPlaca(e.target.value.toUpperCase())}
-                placeholder="Ej: ABC123"
-                className="w-full h-12 pl-10 pr-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg font-mono"
+                placeholder="Ej: ABC-123"
+                className="w-full h-12 pl-10 pr-4 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base font-mono tracking-widest text-gray-900 placeholder-gray-400 transition-colors"
                 maxLength={10}
+                autoComplete="off"
+                autoCapitalize="characters"
               />
             </div>
+            <p className="mt-1.5 text-xs text-gray-400">
+              Escribe exactamente como aparece en el documento del vehículo
+            </p>
           </div>
 
           <button
             type="submit"
-            disabled={isLoading}
-            className="w-full h-12 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isLoading || !placa.trim()}
+            className="w-full h-12 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2 shadow-sm"
           >
             {isLoading ? (
-              <span className="flex items-center justify-center">
-                <svg className="animate-spin h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                </svg>
-                Buscando...
-              </span>
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Consultando…
+              </>
             ) : (
-              'Buscar Censo'
+              <>
+                <Search className="w-5 h-5" />
+                Consultar
+              </>
             )}
           </button>
         </form>
       </div>
 
-      {/* Error Message */}
+      {/* Error */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-          <div className="flex items-center">
-            <AlertCircle className="h-5 w-5 text-red-500 mr-3" />
-            <p className="text-sm text-red-700">{error}</p>
+        <div className="flex items-start gap-3 bg-red-50 border border-red-200 rounded-2xl p-4 mb-5">
+          <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-red-700 leading-relaxed">{error}</p>
+        </div>
+      )}
+
+      {/* Result */}
+      {censusInfo && (
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+
+          {/* Result header */}
+          <div className="flex items-center gap-3 px-6 py-4 bg-green-50 border-b border-green-100">
+            <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+            <div>
+              <p className="text-sm font-semibold text-green-800">Vehículo encontrado en el censo</p>
+              <p className="text-xs text-green-600">Placa <span className="font-mono font-bold">{censusInfo.placa}</span></p>
+            </div>
+            <div className="ml-auto">
+              <StatusBadge estado={censusInfo.estado} />
+            </div>
+          </div>
+
+          {/* Details */}
+          <div className="px-6">
+            <InfoRow
+              icon={<Hash className="w-4 h-4" />}
+              label="Código de censo"
+              value={<span className="font-mono text-blue-600">{censusInfo.codigoCenso}</span>}
+            />
+            <InfoRow
+              icon={<Bike className="w-4 h-4" />}
+              label="Tipo de vehículo"
+              value={getTipoLabel(censusInfo.tipoVehiculo)}
+            />
+            <InfoRow
+              icon={<Activity className="w-4 h-4" />}
+              label="Actividad"
+              value={getActividadLabel(censusInfo.actividad)}
+            />
+            <InfoRow
+              icon={<Calendar className="w-4 h-4" />}
+              label="Fecha del censo"
+              value={format(new Date(censusInfo.fechaCenso), "d 'de' MMMM 'de' yyyy", { locale: es })}
+            />
+          </div>
+
+          {/* Certificate section */}
+          {censusInfo.certificate ? (
+            <div className="mx-6 my-5 rounded-xl bg-blue-50 border border-blue-100 p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <FileText className="w-4 h-4 text-blue-600" />
+                <span className="text-sm font-semibold text-blue-800">Certificado disponible</span>
+              </div>
+              <p className="text-xs text-blue-600 mb-1">
+                Código: <span className="font-mono font-bold">{censusInfo.certificate.codigoCertificado}</span>
+              </p>
+              <p className="text-xs text-blue-500 mb-4">
+                Generado el {format(new Date(censusInfo.certificate.fechaGeneracion), "d 'de' MMMM 'de' yyyy", { locale: es })}
+              </p>
+              <a
+                href={`/validar/${censusInfo.certificate.codigoCertificado}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-colors"
+              >
+                <ExternalLink className="w-4 h-4" />
+                Ver certificado
+              </a>
+            </div>
+          ) : (
+            censusInfo.estado === 'FINALIZADO' && (
+              <div className="mx-6 my-5 rounded-xl bg-gray-50 border border-gray-200 p-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <FileText className="w-4 h-4 text-gray-400" />
+                  <span className="text-sm font-semibold text-gray-600">Certificado no generado aún</span>
+                </div>
+                <p className="text-xs text-gray-500">
+                  Tu censo está finalizado. El certificado será generado por la Alcaldía próximamente.
+                </p>
+              </div>
+            )
+          )}
+
+          {/* Footer note */}
+          <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
+            <p className="text-xs text-gray-400 text-center">
+              Si la información no es correcta, comunícate con la Alcaldía de Sabanalarga.
+            </p>
           </div>
         </div>
       )}
 
-      {/* Census Info */}
-      {censusInfo && (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <div className="bg-green-50 border-b border-green-200 p-4">
-            <div className="flex items-center">
-              <CheckCircle className="h-5 w-5 text-green-500 mr-3" />
-              <p className="text-sm font-medium text-green-800">
-                Censo encontrado
-              </p>
-            </div>
-          </div>
-
-          <div className="p-6 space-y-4">
-            {/* Placa */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-              <span className="text-sm font-medium text-gray-500">Placa</span>
-              <span className="text-lg font-bold text-gray-900 font-mono">
-                {censusInfo.placa}
-              </span>
-            </div>
-
-            <hr className="border-gray-200" />
-
-            {/* Código Censo */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-              <span className="text-sm font-medium text-gray-500">Código de Censo</span>
-              <span className="text-sm font-medium text-blue-600">
-                {censusInfo.codigoCenso}
-              </span>
-            </div>
-
-            <hr className="border-gray-200" />
-
-            {/* Tipo de Vehículo */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-              <span className="text-sm font-medium text-gray-500">Tipo de Vehículo</span>
-              <span className="text-sm text-gray-900">
-                {getTipoLabel(censusInfo.tipoVehiculo)}
-              </span>
-            </div>
-
-            <hr className="border-gray-200" />
-
-            {/* Actividad */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-              <span className="text-sm font-medium text-gray-500">Actividad</span>
-              <span className="text-sm text-gray-900">
-                {getActividadLabel(censusInfo.actividad)}
-              </span>
-            </div>
-
-            <hr className="border-gray-200" />
-
-            {/* Fecha del Censo */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-              <span className="text-sm font-medium text-gray-500">Fecha del Censo</span>
-              <span className="text-sm text-gray-900">
-                {format(new Date(censusInfo.fechaCenso), 'dd/MM/yyyy', { locale: es })}
-              </span>
-            </div>
-
-            <hr className="border-gray-200" />
-
-            {/* Estado */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-              <span className="text-sm font-medium text-gray-500">Estado</span>
-              {getStatusBadge(censusInfo.estado)}
-            </div>
-
-            {/* Certificate Section */}
-            {censusInfo.certificate && (
-              <>
-                <hr className="border-gray-200" />
-                
-                <div className="bg-blue-50 rounded-lg p-4">
-                  <div className="flex items-center mb-3">
-                    <FileText className="h-5 w-5 text-blue-500 mr-2" />
-                    <span className="text-sm font-medium text-blue-800">
-                      Certificado Generado
-                    </span>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                      <span className="text-sm text-blue-600">Código de Certificado</span>
-                      <span className="text-sm font-mono font-medium text-blue-800">
-                        {censusInfo.certificate.codigoCertificado}
-                      </span>
-                    </div>
-                    
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                      <span className="text-sm text-blue-600">Fecha de Generación</span>
-                      <span className="text-sm text-blue-800">
-                        {format(new Date(censusInfo.certificate.fechaGeneracion), 'dd/MM/yyyy HH:mm', { locale: es })}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
+      {/* Help tip (only before search) */}
+      {!censusInfo && !error && (
+        <div className="mt-6 flex items-start gap-3 text-xs text-gray-400">
+          <span className="text-lg leading-none">💡</span>
+          <p className="leading-relaxed">
+            Esta consulta es gratuita y pública. Solo necesitas la placa del vehículo.
+            Si tu moto no aparece, acércate a la Alcaldía para registrarla.
+          </p>
         </div>
       )}
     </div>
