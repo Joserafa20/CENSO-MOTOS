@@ -210,14 +210,20 @@ export class CertificatePdfService {
       doc.font('Helvetica').fontSize(8).fillColor('#6b7280')
         .text(params.alcaldiaData?.nombre || 'Alcaldía Municipal', M, sigY + 65, { width: sigColW, align: 'center' });
 
-      // Right signature — Sello
+      // Right — Sello (logo image if available, otherwise placeholder circles)
       const sealX = M + sigColW + 24;
-      doc.circle(sealX + sigColW / 2, sigY + 32, 30).strokeColor(BLUE_DARK).lineWidth(1.5).stroke();
-      doc.circle(sealX + sigColW / 2, sigY + 32, 24).strokeColor(BLUE_DARK).lineWidth(0.5).stroke();
-      doc.font('Helvetica-Bold').fontSize(7).fillColor(BLUE_DARK)
-        .text('SELLO OFICIAL', sealX, sigY + 28, { width: sigColW, align: 'center' });
-      doc.font('Helvetica').fontSize(6).fillColor(BLUE_MID)
-        .text('ALCALDÍA', sealX, sigY + 38, { width: sigColW, align: 'center' });
+      const sealSize = 64;
+      const sealImgX = sealX + (sigColW - sealSize) / 2;
+      if (logoBuffer) {
+        doc.image(logoBuffer, sealImgX, sigY, { width: sealSize, height: sealSize, fit: [sealSize, sealSize] });
+      } else {
+        doc.circle(sealX + sigColW / 2, sigY + 32, 30).strokeColor(BLUE_DARK).lineWidth(1.5).stroke();
+        doc.circle(sealX + sigColW / 2, sigY + 32, 24).strokeColor(BLUE_DARK).lineWidth(0.5).stroke();
+        doc.font('Helvetica-Bold').fontSize(7).fillColor(BLUE_DARK)
+          .text('SELLO OFICIAL', sealX, sigY + 28, { width: sigColW, align: 'center' });
+        doc.font('Helvetica').fontSize(6).fillColor(BLUE_MID)
+          .text('ALCALDÍA', sealX, sigY + 38, { width: sigColW, align: 'center' });
+      }
 
       // ── FOOTER BAND ───────────────────────────────────────────────
       doc.rect(0, H - 38, W, 38).fill(BLUE_DARK);
