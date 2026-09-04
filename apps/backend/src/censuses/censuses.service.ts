@@ -365,7 +365,6 @@ export class CensusesService {
   ) {
     const census = await this.prisma.census.findUnique({
       where: { id },
-      include: { estacion: true },
     });
 
     if (!census) {
