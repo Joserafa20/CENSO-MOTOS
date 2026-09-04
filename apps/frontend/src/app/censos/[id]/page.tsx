@@ -15,7 +15,7 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import apiClient from '@/lib/api-client';
 import { useAuthStore } from '@/stores/auth-store';
-import DashboardWrapper from '../../../components/dashboard-wrapper';
+import DashboardWrapper from '../../components/dashboard-wrapper';
 
 interface CensusDetail {
   id: string;
