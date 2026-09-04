@@ -14,7 +14,7 @@ import {
 import { PublicService } from './public.service';
 
 @ApiTags('public')
-@Controller('api/public')
+@Controller('public')
 export class PublicController {
   constructor(private readonly publicService: PublicService) {}
 

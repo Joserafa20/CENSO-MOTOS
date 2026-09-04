@@ -32,7 +32,7 @@ import { FinalizeCensusDto } from './dto/finalize-census.dto';
 @ApiTags('censuses')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Controller('api/censuses')
+@Controller('censuses')
 export class CensusesController {
   constructor(private readonly censusesService: CensusesService) {}
 
