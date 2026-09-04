@@ -14,6 +14,7 @@ import { PublicModule } from './public/public.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { StationsModule } from './stations/stations.module';
 import { CensistasModule } from './censistas/censistas.module';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { CensistasModule } from './censistas/censistas.module';
     DashboardModule,
     StationsModule,
     CensistasModule,
+    SeedModule,
   ],
   providers: [
     {
