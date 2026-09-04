@@ -11,6 +11,7 @@ import * as crypto from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
 import { CertificatePdfService } from './pdf/certificate-pdf.service';
+import { SettingsService } from '../settings/settings.service';
 
 @Injectable()
 export class CertificatesService {
@@ -22,6 +23,7 @@ export class CertificatesService {
     private readonly auditService: AuditService,
     private readonly pdfService: CertificatePdfService,
     private readonly configService: ConfigService,
+    private readonly settingsService: SettingsService,
   ) {
     this.hmacSecret =
       this.configService.get<string>('CERTIFICATE_HMAC_SECRET') ||
@@ -169,6 +171,7 @@ export class CertificatesService {
     }
 
     // Generate PDF
+    const alcaldiaConfig = await this.settingsService.get();
     const pdfBuffer = await this.pdfService.generatePdf({
       codigoCertificado: certificate.codigoCertificado,
       placa: certificate.census.placa,
@@ -176,6 +179,10 @@ export class CertificatesService {
       actividad: certificate.census.actividad || undefined,
       fechaCenso: certificate.census.fechaCenso,
       qrToken: certificate.qrToken,
+      alcaldiaData: {
+        nombre: alcaldiaConfig.nombre,
+        logoUrl: alcaldiaConfig.logoUrl ?? undefined,
+      },
     });
 
     return {

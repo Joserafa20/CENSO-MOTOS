@@ -222,6 +222,20 @@ export const censistasApi = {
   toggleStatus: (id: string) => apiClient.patch(`/api/admin/censistas/${id}/status`),
 };
 
+export const settingsApi = {
+  get: () => apiClient.get('/api/admin/configuracion'),
+
+  update: (data: {
+    nombre?: string;
+    nit?: string;
+    municipio?: string;
+    departamento?: string;
+    alcalde?: string;
+    cargo?: string;
+    logoUrl?: string;
+  }) => apiClient.put('/api/admin/configuracion', data),
+};
+
 export const certificatesApi = {
   findAllAdmin: (params?: {
     search?: string;

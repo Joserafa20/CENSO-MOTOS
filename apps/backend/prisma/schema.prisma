@@ -125,6 +125,21 @@ model Certificate {
   @@map("certificates")
 }
 
+model ConfiguracionAlcaldia {
+  id           String   @id @default(uuid())
+  nombre       String   @default("Alcaldía Municipal de Sabanalarga")
+  nit          String?
+  municipio    String   @default("Sabanalarga")
+  departamento String   @default("Atlántico")
+  alcalde      String?
+  cargo        String?
+  logoUrl      String?  @map("logo_url")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("configuracion_alcaldia")
+}
+
 model AuditLog {
   id          String   @id @default(uuid())
   usuarioId   String?  @map("usuario_id")
