@@ -29,7 +29,7 @@ const navLinks: NavLink[] = [
 export default function DashboardWrapper({ children }: Readonly<{ children: React.ReactNode }>) {
   const router = useRouter();
   const pathname = usePathname();
-  const { user, isAuthenticated, logout } = useAuthStore();
+  const { user, isAuthenticated, logout, initialized } = useAuthStore();
   const { theme, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -38,11 +38,15 @@ export default function DashboardWrapper({ children }: Readonly<{ children: Reac
   }, []);
 
   useEffect(() => {
-    if (!isAuthenticated && typeof window !== 'undefined') {
-      const token = localStorage.getItem('token');
-      if (!token) router.push('/login');
+    // Wait until initialize() has finished reading localStorage before
+    // deciding to redirect. Without this guard, the effect fires with the
+    // initial isAuthenticated=false before the store is populated, and any
+    // browser that clears storage between navigations gets a false redirect.
+    if (!initialized) return;
+    if (!isAuthenticated) {
+      router.push('/login');
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, initialized, router]);
 
   const handleLogout = () => {
     logout();

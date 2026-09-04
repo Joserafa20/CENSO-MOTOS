@@ -49,10 +49,10 @@ function LoginPage() {
         <LogIn className="h-8 w-8 text-white" />
       </div>
 
-      <h2 className="mt-6 text-3xl font-bold tracking-tight text-gray-900">
+      <h2 className="mt-6 text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
         Censo de Motos
       </h2>
-      <p className="mt-2 text-sm text-gray-600">
+      <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
         Inicia sesión para acceder al sistema
       </p>
 
@@ -61,7 +61,7 @@ function LoginPage() {
           <div>
             <label
               htmlFor="username"
-              className="block text-sm font-medium text-gray-700 text-left"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 text-left"
             >
               Usuario
             </label>
@@ -70,7 +70,7 @@ function LoginPage() {
               id="username"
               type="text"
               autoComplete="username"
-              className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:text-sm"
+              className="mt-1 block w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 dark:bg-gray-700 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 sm:text-sm"
               placeholder="Ingresa tu usuario"
             />
             {errors.username && (
@@ -83,7 +83,7 @@ function LoginPage() {
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700 text-left"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 text-left"
             >
               Contraseña
             </label>
@@ -93,13 +93,13 @@ function LoginPage() {
                 id="password"
                 type={showPassword ? 'text' : 'password'}
                 autoComplete="current-password"
-                className="block w-full rounded-lg border border-gray-300 px-3 py-2 pr-10 text-gray-900 placeholder-gray-500 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 sm:text-sm"
+                className="block w-full rounded-lg border border-gray-300 dark:border-gray-600 px-3 py-2 pr-10 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 dark:bg-gray-700 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900 sm:text-sm"
                 placeholder="Ingresa tu contraseña"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300"
               >
                 {showPassword ? (
                   <EyeOff className="h-5 w-5" />

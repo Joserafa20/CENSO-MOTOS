@@ -1,8 +1,15 @@
 import axios from 'axios';
 
+// On the client, use relative URLs so all requests go through the Next.js
+// proxy rewrite (/api/* → Render). This keeps them same-origin and avoids
+// Brave/Firefox cross-origin blocking. On the server (SSR/API routes) the
+// rewrite is not available, so fall back to the full backend URL.
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001',
-  timeout: 10000,
+  baseURL:
+    typeof window === 'undefined'
+      ? process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
+      : '',
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
   },
