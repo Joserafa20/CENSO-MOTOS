@@ -7,7 +7,22 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+        {
+          "key": "Cache-Control",
+          "value": "private, no-cache, no-store, max-age=0, must-revalidate"
+        },
+        {
+          "key": "CDN-Cache-Control",
+          "value": "no-store"
+        },
+        {
+          "key": "Vercel-Cache-Control",
+          "value": "no-store"
+        },
+        {
+          "key": "Surrogate-Control",
+          "value": "no-store"
+        }
       ]
     }
   ]
