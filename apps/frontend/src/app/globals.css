@@ -3,17 +3,30 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --foreground-rgb: 17, 24, 39;
+  --background-rgb: 249, 250, 251;
+}
+
+.dark {
+  --foreground-rgb: 243, 244, 246;
+  --background-rgb: 17, 24, 39;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background-color: rgb(var(--background-rgb));
+}
+
+/* Fix: force explicit background and text color on all form elements */
+@layer base {
+  input:not([type='checkbox']):not([type='radio']):not([type='range']),
+  select,
+  textarea {
+    @apply bg-white text-gray-900 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400;
+  }
+
+  /* Fix: native select arrow visibility */
+  select option {
+    @apply bg-white text-gray-900 dark:bg-gray-700 dark:text-gray-100;
+  }
 }
