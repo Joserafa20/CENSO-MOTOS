@@ -15,6 +15,7 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import apiClient from '@/lib/api-client';
 import { useAuthStore } from '@/stores/auth-store';
+import DashboardWrapper from '../../../components/dashboard-wrapper';
 
 interface CensusDetail {
   id: string;
@@ -43,7 +44,7 @@ interface CensusDetail {
   } | null;
 }
 
-export default function CensusDetailPage() {
+function CensusDetailPage() {
   const router = useRouter();
   const params = useParams();
   const { user } = useAuthStore();
@@ -315,5 +316,13 @@ function DetailItem({
         {value}
       </dd>
     </div>
+  );
+}
+
+export default function CensusDetailWrapper() {
+  return (
+    <DashboardWrapper>
+      <CensusDetailPage />
+    </DashboardWrapper>
   );
 }

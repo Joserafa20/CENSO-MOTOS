@@ -8,6 +8,7 @@ import { es } from 'date-fns/locale';
 
 import apiClient from '@/lib/api-client';
 import toast from 'react-hot-toast';
+import DashboardWrapper from '../components/dashboard-wrapper';
 
 interface Census {
   id: string;
@@ -26,7 +27,7 @@ interface PaginationMeta {
   totalPages: number;
 }
 
-export default function CensosPage() {
+function CensosPage() {
   const router = useRouter();
   const [censuses, setCensuses] = useState<Census[]>([]);
   const [meta, setMeta] = useState<PaginationMeta | null>(null);
@@ -311,5 +312,13 @@ export default function CensosPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function CensosWrapper() {
+  return (
+    <DashboardWrapper>
+      <CensosPage />
+    </DashboardWrapper>
   );
 }

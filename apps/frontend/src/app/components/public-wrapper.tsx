@@ -1,4 +1,4 @@
-export default function PublicLayout({
+export default function PublicWrapper({
   children,
 }: Readonly<{
   children: React.ReactNode;

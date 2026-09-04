@@ -9,6 +9,7 @@ import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
 
 import apiClient from '@/lib/api-client';
 import toast from 'react-hot-toast';
+import DashboardWrapper from '../../components/dashboard-wrapper';
 
 const step1Schema = z.object({
   placa: z
@@ -68,7 +69,7 @@ const step2Schema = z.object({
 
 type Step2Data = z.infer<typeof step2Schema>;
 
-export default function NuevoCensoPage() {
+function NuevoCensoPage() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [step1Data, setStep1Data] = useState<Step1Data | null>(null);
@@ -675,5 +676,13 @@ export default function NuevoCensoPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function NuevoCensoWrapper() {
+  return (
+    <DashboardWrapper>
+      <NuevoCensoPage />
+    </DashboardWrapper>
   );
 }

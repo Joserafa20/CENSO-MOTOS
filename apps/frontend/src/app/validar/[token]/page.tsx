@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { CheckCircle, XCircle, FileText, AlertCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import PublicWrapper from '../../components/public-wrapper';
 
 interface ValidationResponse {
   valid: boolean;
@@ -23,7 +24,7 @@ interface ValidationResponse {
   };
 }
 
-export default function ValidarPage() {
+function ValidarPage() {
   const params = useParams();
   const token = params.token as string;
   
@@ -258,5 +259,13 @@ export default function ValidarPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ValidarWrapper() {
+  return (
+    <PublicWrapper>
+      <ValidarPage />
+    </PublicWrapper>
   );
 }

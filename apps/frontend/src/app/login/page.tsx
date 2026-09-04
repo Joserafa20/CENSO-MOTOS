@@ -8,7 +8,8 @@ import { z } from 'zod';
 import toast from 'react-hot-toast';
 import { Loader2, LogIn, Eye, EyeOff } from 'lucide-react';
 
-import { useAuthStore } from '../../../stores/auth-store';
+import { useAuthStore } from '../../stores/auth-store';
+import AuthWrapper from '../components/auth-wrapper';
 
 const loginSchema = z.object({
   username: z.string().min(1, 'El nombre de usuario es requerido'),
@@ -17,7 +18,7 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
-export default function LoginPage() {
+function LoginPage() {
   const router = useRouter();
   const { login, isLoading } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
@@ -131,5 +132,13 @@ export default function LoginPage() {
         </button>
       </form>
     </div>
+  );
+}
+
+export default function LoginWrapper() {
+  return (
+    <AuthWrapper>
+      <LoginPage />
+    </AuthWrapper>
   );
 }

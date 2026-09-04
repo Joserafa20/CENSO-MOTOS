@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Search, Download, FileText, AlertCircle, CheckCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import PublicWrapper from '../components/public-wrapper';
 
 interface Certificate {
   id: string;
@@ -22,7 +23,7 @@ interface CensusInfo {
   certificate?: Certificate;
 }
 
-export default function ConsultarPage() {
+function ConsultarPage() {
   const [placa, setPlaca] = useState('');
   const [censusInfo, setCensusInfo] = useState<CensusInfo | null>(null);
   const [error, setError] = useState('');
@@ -272,5 +273,13 @@ export default function ConsultarPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ConsultarWrapper() {
+  return (
+    <PublicWrapper>
+      <ConsultarPage />
+    </PublicWrapper>
   );
 }

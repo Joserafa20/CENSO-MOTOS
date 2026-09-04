@@ -14,7 +14,7 @@ interface NavLink {
 
 const navLinks: NavLink[] = [
   {
-    href: '/dashboard',
+    href: '/',
     label: 'Inicio',
     icon: <Home className="w-5 h-5" />,
   },
@@ -37,7 +37,7 @@ const navLinks: NavLink[] = [
   },
 ];
 
-export default function DashboardLayout({
+export default function DashboardWrapper({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -66,8 +66,8 @@ export default function DashboardLayout({
   };
 
   const isActiveLink = (href: string) => {
-    if (href === '/dashboard') {
-      return pathname === '/dashboard' || pathname === '/dashboard/';
+    if (href === '/') {
+      return pathname === '/' || pathname === '/dashboard';
     }
     return pathname.startsWith(href);
   };
