@@ -37,7 +37,7 @@ export class CensusesController {
   constructor(private readonly censusesService: CensusesService) {}
 
   @Post()
-  @Roles('CENSISTA')
+  @Roles('CENSISTA', 'ADMIN')
   @ApiOperation({ summary: 'Crear un nuevo censo' })
   @ApiResponse({ status: 201, description: 'Censo creado exitosamente' })
   @ApiResponse({ status: 400, description: 'Error de validación' })
@@ -56,7 +56,7 @@ export class CensusesController {
   }
 
   @Get()
-  @Roles('CENSISTA')
+  @Roles('CENSISTA', 'ADMIN')
   @ApiOperation({ summary: 'Listar censos del censista actual' })
   @ApiQuery({ name: 'estado', required: false, enum: ['BORRADOR', 'FINALIZADO', 'CERTIFICADO_GENERADO'] })
   @ApiQuery({ name: 'search', required: false, type: String })
@@ -97,7 +97,7 @@ export class CensusesController {
   }
 
   @Put(':id')
-  @Roles('CENSISTA')
+  @Roles('CENSISTA', 'ADMIN')
   @ApiOperation({ summary: 'Actualizar un censo' })
   @ApiResponse({ status: 200, description: 'Censo actualizado' })
   @ApiResponse({ status: 400, description: 'Error de validación o censo no modificable' })
@@ -118,7 +118,7 @@ export class CensusesController {
   }
 
   @Post(':id/finalize')
-  @Roles('CENSISTA')
+  @Roles('CENSISTA', 'ADMIN')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Finalizar un censo' })
   @ApiResponse({ status: 200, description: 'Censo finalizado exitosamente' })

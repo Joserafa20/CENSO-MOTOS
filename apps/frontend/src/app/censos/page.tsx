@@ -8,6 +8,7 @@ import { es } from 'date-fns/locale';
 
 import apiClient from '@/lib/api-client';
 import toast from 'react-hot-toast';
+import { useAuthStore } from '@/stores/auth-store';
 import DashboardWrapper from '../components/dashboard-wrapper';
 
 interface Census {
@@ -29,6 +30,8 @@ interface PaginationMeta {
 
 function CensosPage() {
   const router = useRouter();
+  const { user } = useAuthStore();
+  const isAdmin = user?.rol === 'ADMIN';
   const [censuses, setCensuses] = useState<Census[]>([]);
   const [meta, setMeta] = useState<PaginationMeta | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -45,7 +48,10 @@ function CensosPage() {
       params.append('page', currentPage.toString());
       params.append('limit', '10');
 
-      const response = await apiClient.get(`/api/censuses?${params.toString()}`);
+      const endpoint = isAdmin
+        ? `/api/censuses/admin/all?${params.toString()}`
+        : `/api/censuses?${params.toString()}`;
+      const response = await apiClient.get(endpoint);
       setCensuses(response.data.data);
       setMeta(response.data.meta);
     } catch (error) {
