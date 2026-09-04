@@ -11,7 +11,7 @@ interface MototaxiData {
   propiedad?: Propiedad;
   modalidad?: Modalidad;
   valorTarifa?: number;
-  estacionId?: string;
+  estacionNombre?: string;
   documentosAlDia?: boolean;
   horario?: Horario;
 }
@@ -19,7 +19,7 @@ interface MototaxiData {
 export function getMototaxiRequiredFields(): RequiredFieldsResult {
   return {
     required: ['actividad', 'propiedad', 'modalidad', 'documentosAlDia', 'horario'],
-    optional: ['valorTarifa', 'estacionId', 'latitud', 'longitud'],
+    optional: ['valorTarifa', 'estacionNombre', 'latitud', 'longitud'],
   };
 }
 
@@ -61,12 +61,6 @@ export function validateMototaxiData(data: Partial<MototaxiData>): ValidationRes
     }
   }
 
-  // If modalidad is ESTACION, estacionId is required
-  if (data.modalidad === 'ESTACION') {
-    if (!data.estacionId) {
-      errors.push('La estación es requerida cuando la modalidad es "Estación"');
-    }
-  }
 
   return {
     isValid: errors.length === 0,

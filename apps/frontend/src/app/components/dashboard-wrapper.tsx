@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import {
   Home, FileText, LogOut, Menu, X, User,
-  MapPin, CheckCircle, Award, Shield, Sun, Moon, Settings,
+  CheckCircle, Award, Shield, Sun, Moon, Settings,
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth-store';
 import { useTheme } from '@/components/theme-provider';
@@ -21,7 +21,6 @@ const navLinks: NavLink[] = [
   { href: '/censos', label: 'Censos', icon: <FileText className="w-5 h-5" /> },
   { href: '/aprobar-censos', label: 'Aprobar Censos', icon: <CheckCircle className="w-5 h-5" />, roles: ['ADMIN'] },
   { href: '/certificados', label: 'Certificados', icon: <Award className="w-5 h-5" />, roles: ['ADMIN'] },
-  { href: '/estaciones', label: 'Estaciones', icon: <MapPin className="w-5 h-5" />, roles: ['ADMIN'] },
   { href: '/usuarios', label: 'Usuarios', icon: <Shield className="w-5 h-5" />, roles: ['ADMIN'] },
   { href: '/configuracion', label: 'Configuración', icon: <Settings className="w-5 h-5" />, roles: ['ADMIN'] },
 ];

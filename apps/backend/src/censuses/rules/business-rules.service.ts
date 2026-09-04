@@ -45,7 +45,7 @@ export class BusinessRulesService {
     propiedad?: string;
     modalidad?: string;
     valorTarifa?: number;
-    estacionId?: string;
+    estacionNombre?: string;
     documentosAlDia?: boolean;
     horario?: string;
   }): ValidationResult {

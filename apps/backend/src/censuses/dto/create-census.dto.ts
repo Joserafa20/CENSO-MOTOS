@@ -62,10 +62,10 @@ export class CreateCensusDto {
   @Min(0.01, { message: 'El valor de tarifa debe ser mayor a 0' })
   valorTarifa?: number;
 
-  @ApiPropertyOptional({ description: 'ID de la estación (requerido si modalidad es ESTACION)' })
+  @ApiPropertyOptional({ description: 'Nombre de la estación (texto libre)' })
   @IsOptional()
   @IsString()
-  estacionId?: string;
+  estacionNombre?: string;
 
   @ApiPropertyOptional({ description: 'Documentos al día del vehículo' })
   @IsOptional()

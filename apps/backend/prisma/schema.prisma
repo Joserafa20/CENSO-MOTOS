@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 enum Rol {
@@ -78,8 +79,7 @@ model Census {
   propiedad       Propiedad?
   modalidad       Modalidad?
   valorTarifa     Decimal?       @map("valor_tarifa") @db.Decimal(10, 2)
-  estacionId      String?        @map("estacion_id")
-  estacion        Station?       @relation(fields: [estacionId], references: [id])
+  estacionNombre  String?        @map("estacion_nombre")
   documentosAlDia Boolean?       @map("documentos_al_dia")
   horario         Horario?
   censistaId      String         @map("censista_id")
@@ -107,7 +107,6 @@ model Station {
   observaciones String?
   createdAt     DateTime      @default(now()) @map("created_at")
   updatedAt     DateTime      @updatedAt @map("updated_at")
-  censuses      Census[]
 
   @@map("stations")
 }

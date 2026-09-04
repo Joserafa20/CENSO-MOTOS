@@ -52,7 +52,7 @@ export class CensusesService {
       propiedad: createCensusDto.propiedad,
       modalidad: createCensusDto.modalidad,
       valorTarifa: createCensusDto.valorTarifa,
-      estacionId: createCensusDto.estacionId,
+      estacionNombre: createCensusDto.estacionNombre,
       documentosAlDia: createCensusDto.documentosAlDia,
       horario: createCensusDto.horario,
     });
@@ -93,7 +93,7 @@ export class CensusesService {
         propiedad: createCensusDto.propiedad as any || null,
         modalidad: createCensusDto.modalidad as any || null,
         valorTarifa: createCensusDto.valorTarifa || null,
-        estacionId: createCensusDto.estacionId || null,
+        estacionNombre: createCensusDto.estacionNombre || null,
         documentosAlDia: createCensusDto.documentosAlDia ?? null,
         horario: createCensusDto.horario as any || null,
         censistaId: userId,
@@ -101,7 +101,6 @@ export class CensusesService {
         longitud: createCensusDto.longitud || null,
       },
       include: {
-        estacion: true,
         censista: {
           select: { id: true, nombre: true, username: true },
         },
@@ -126,7 +125,6 @@ export class CensusesService {
     const census = await this.prisma.census.findUnique({
       where: { id },
       include: {
-        estacion: true,
         censista: {
           select: { id: true, nombre: true, username: true },
         },
@@ -187,7 +185,6 @@ export class CensusesService {
       this.prisma.census.findMany({
         where,
         include: {
-          estacion: { select: { id: true, nombre: true } },
         },
         orderBy: { createdAt: 'desc' },
         skip,
@@ -248,7 +245,6 @@ export class CensusesService {
       this.prisma.census.findMany({
         where,
         include: {
-          estacion: { select: { id: true, nombre: true } },
           censista: { select: { id: true, nombre: true, username: true } },
           certificate: { select: { id: true, codigoCertificado: true } },
         },
@@ -302,7 +298,7 @@ export class CensusesService {
       propiedad: updateCensusDto.propiedad || census.propiedad,
       modalidad: updateCensusDto.modalidad || census.modalidad,
       valorTarifa: updateCensusDto.valorTarifa ?? census.valorTarifa?.toNumber(),
-      estacionId: updateCensusDto.estacionId || census.estacionId,
+      estacionNombre: updateCensusDto.estacionNombre || census.estacionNombre,
       documentosAlDia: updateCensusDto.documentosAlDia ?? census.documentosAlDia,
       horario: updateCensusDto.horario || census.horario,
     };
@@ -314,7 +310,7 @@ export class CensusesService {
       propiedad: mergedData.propiedad as string,
       modalidad: mergedData.modalidad as string,
       valorTarifa: mergedData.valorTarifa,
-      estacionId: mergedData.estacionId,
+      estacionNombre: mergedData.estacionNombre,
       documentosAlDia: mergedData.documentosAlDia as boolean,
       horario: mergedData.horario as string,
     });
@@ -335,14 +331,13 @@ export class CensusesService {
         propiedad: (updateCensusDto.propiedad as any) || census.propiedad,
         modalidad: (updateCensusDto.modalidad as any) || census.modalidad,
         valorTarifa: updateCensusDto.valorTarifa ?? census.valorTarifa,
-        estacionId: updateCensusDto.estacionId ?? census.estacionId,
+        estacionNombre: updateCensusDto.estacionNombre ?? census.estacionNombre,
         documentosAlDia: updateCensusDto.documentosAlDia ?? census.documentosAlDia,
         horario: (updateCensusDto.horario as any) || census.horario,
         latitud: updateCensusDto.latitud ?? census.latitud,
         longitud: updateCensusDto.longitud ?? census.longitud,
       },
       include: {
-        estacion: true,
         censista: {
           select: { id: true, nombre: true, username: true },
         },
@@ -394,7 +389,7 @@ export class CensusesService {
       propiedad: census.propiedad as string,
       modalidad: census.modalidad as string,
       valorTarifa: census.valorTarifa?.toNumber(),
-      estacionId: census.estacionId,
+      estacionNombre: census.estacionNombre,
       documentosAlDia: census.documentosAlDia as boolean,
       horario: census.horario as string,
     });
@@ -413,7 +408,6 @@ export class CensusesService {
         estado: 'FINALIZADO',
       },
       include: {
-        estacion: true,
         censista: {
           select: { id: true, nombre: true, username: true },
         },

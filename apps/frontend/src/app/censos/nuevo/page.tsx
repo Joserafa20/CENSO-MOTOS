@@ -40,7 +40,6 @@ const step2Schema = z.object({
   propiedad: z.string().optional(),
   modalidad: z.string().optional(),
   valorTarifa: z.number().optional(),
-  estacionId: z.string().optional(),
   estacionNombre: z.string().optional(),
   documentosAlDia: z.preprocess(
     (val) => {
@@ -62,22 +61,9 @@ const step2Schema = z.object({
     message: 'El valor de tarifa es requerido y debe ser mayor a 0',
     path: ['valorTarifa'],
   }
-).refine(
-  (data) => {
-    if (data.modalidad === 'ESTACION') {
-      return data.estacionId !== undefined && data.estacionId !== '';
-    }
-    return true;
-  },
-  {
-    message: 'La estación es requerida cuando la modalidad es Estación',
-    path: ['estacionId'],
-  }
 );
 
 type Step2Data = z.infer<typeof step2Schema>;
-
-interface Station { id: string; nombre: string; }
 
 function NuevoCensoPage() {
   const router = useRouter();
@@ -85,14 +71,6 @@ function NuevoCensoPage() {
   const [step1Data, setStep1Data] = useState<Step1Data | null>(null);
   const [step2Data, setStep2Data] = useState<Step2Data | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [stations, setStations] = useState<Station[]>([]);
-  const [estacionInput, setEstacionInput] = useState('');
-
-  useEffect(() => {
-    apiClient.get('/api/admin/estaciones').then((res) => {
-      setStations(res.data || []);
-    }).catch(() => {});
-  }, []);
 
   // Step 1 form
   const step1Form = useForm<Step1Data>({
@@ -111,7 +89,7 @@ function NuevoCensoPage() {
       propiedad: undefined,
       modalidad: undefined,
       valorTarifa: undefined,
-      estacionId: undefined,
+      estacionNombre: undefined,
       documentosAlDia: undefined,
       horario: undefined,
     },
@@ -141,7 +119,7 @@ function NuevoCensoPage() {
         propiedad: step2Data.propiedad || undefined,
         modalidad: step2Data.modalidad || undefined,
         valorTarifa: step2Data.valorTarifa || undefined,
-        estacionId: step2Data.estacionId || undefined,
+        estacionNombre: step2Data.estacionNombre || undefined,
         documentosAlDia: step2Data.documentosAlDia,
         horario: step2Data.horario || undefined,
       };
@@ -475,36 +453,16 @@ function NuevoCensoPage() {
 
                   {step2Form.watch('modalidad') === 'ESTACION' && (
                     <div>
-                      <label htmlFor="estacionInput" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      <label htmlFor="estacionNombre" className="block text-sm font-medium text-gray-700 mb-2">
                         Estación
                       </label>
                       <input
-                        id="estacionInput"
+                        id="estacionNombre"
                         type="text"
-                        list="estaciones-list"
-                        value={estacionInput}
-                        onChange={(e) => {
-                          setEstacionInput(e.target.value);
-                          const match = stations.find(
-                            (s) => s.nombre.toLowerCase() === e.target.value.toLowerCase(),
-                          );
-                          step2Form.setValue('estacionId', match?.id ?? undefined);
-                          step2Form.setValue('estacionNombre', e.target.value);
-                        }}
-                        className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg"
+                        {...step2Form.register('estacionNombre')}
+                        className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg text-gray-900"
                         placeholder="Escriba el nombre de la estación"
-                        autoComplete="off"
                       />
-                      <datalist id="estaciones-list">
-                        {stations.map((s) => (
-                          <option key={s.id} value={s.nombre} />
-                        ))}
-                      </datalist>
-                      {step2Form.formState.errors.estacionId && (
-                        <p className="mt-1 text-sm text-red-600">
-                          {step2Form.formState.errors.estacionId.message}
-                        </p>
-                      )}
                     </div>
                   )}
 

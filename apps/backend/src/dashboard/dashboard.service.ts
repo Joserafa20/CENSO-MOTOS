@@ -125,7 +125,7 @@ export class DashboardService {
         _count: { id: true },
       }),
       this.prisma.census.groupBy({
-        by: ['estacionId'],
+        by: ['estacionNombre'],
         where,
         _count: { id: true },
       }),
@@ -136,17 +136,6 @@ export class DashboardService {
       }),
     ]);
 
-    // Resolve station names
-    const stationIds = byEstacion
-      .map((item) => item.estacionId)
-      .filter((id): id is string => id !== null);
-    const stations = stationIds.length
-      ? await this.prisma.station.findMany({
-          where: { id: { in: stationIds } },
-          select: { id: true, nombre: true },
-        })
-      : [];
-    const stationMap = new Map(stations.map((s) => [s.id, s.nombre]));
 
     // Resolve censista names
     const censistaIds = byCensista.map((item) => item.censistaId);
@@ -184,8 +173,7 @@ export class DashboardService {
         cantidad: item._count.id,
       })),
       byEstacion: byEstacion.map((item) => ({
-        estacionId: item.estacionId,
-        nombre: stationMap.get(item.estacionId || '') || 'Sin estación',
+        nombre: item.estacionNombre || 'Sin estación',
         cantidad: item._count.id,
       })),
       byCensista: byCensista.map((item) => ({
@@ -220,7 +208,7 @@ export class DashboardService {
     }
 
     if (filters.estacion) {
-      where.estacionId = filters.estacion;
+      where.estacionNombre = filters.estacion;
     }
 
     if (filters.horario) {
