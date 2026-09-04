@@ -25,5 +25,5 @@
     "baseUrl": "."
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "dist", "build", ".next", "coverage"]
+  "exclude": ["node_modules", "dist", "build", ".next", "coverage", "vitest.config.ts", "vitest.setup.ts"]
 }
