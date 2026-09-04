@@ -1,12 +1,7 @@
 {
-  "buildCommand": "npm run build --workspace=apps/frontend",
+  "installCommand": "npm install",
+  "buildCommand": "npm run build:frontend",
   "outputDirectory": "apps/frontend/.next",
   "framework": "nextjs",
-  "installCommand": "npm install",
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "/api/:path*"
-    }
-  ]
+  "regions": ["iad1"]
 }
