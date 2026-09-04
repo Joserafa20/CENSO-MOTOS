@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import {
-  Home, FileText, Users, LogOut, Menu, X, User,
+  Home, FileText, LogOut, Menu, X, User,
   MapPin, CheckCircle, Award, Shield, Sun, Moon,
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth-store';
@@ -22,7 +22,6 @@ const navLinks: NavLink[] = [
   { href: '/aprobar-censos', label: 'Aprobar Censos', icon: <CheckCircle className="w-5 h-5" />, roles: ['ADMIN'] },
   { href: '/certificados', label: 'Certificados', icon: <Award className="w-5 h-5" />, roles: ['ADMIN'] },
   { href: '/estaciones', label: 'Estaciones', icon: <MapPin className="w-5 h-5" />, roles: ['ADMIN'] },
-  { href: '/censistas', label: 'Censistas', icon: <Users className="w-5 h-5" />, roles: ['ADMIN'] },
   { href: '/usuarios', label: 'Usuarios', icon: <Shield className="w-5 h-5" />, roles: ['ADMIN'] },
 ];
 
