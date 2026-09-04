@@ -30,22 +30,12 @@ export class StationsService {
   async findAll() {
     return this.prisma.station.findMany({
       orderBy: { createdAt: 'desc' },
-      include: {
-        _count: {
-          select: { censuses: true },
-        },
-      },
     });
   }
 
   async findOne(id: string) {
     const station = await this.prisma.station.findUnique({
       where: { id },
-      include: {
-        _count: {
-          select: { censuses: true },
-        },
-      },
     });
 
     if (!station) {
