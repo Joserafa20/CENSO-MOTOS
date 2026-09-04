@@ -29,17 +29,21 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-// Response interceptor: on 401, clear credentials and fire a custom event
-// so DashboardWrapper's route guard handles the redirect gracefully.
-// Avoid window.location.href here — a hard navigation on any transient 401
-// (e.g. Render cold-start hiccup) would kick the user out of a valid session.
+// Response interceptor: only treat 401 as a session-ending event when it
+// comes from an auth endpoint (/api/auth/*). Data endpoints (dashboard,
+// censuses, etc.) return 401 on transient Render cold-start hiccups and
+// should fail gracefully without logging the user out.
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401 && typeof window !== 'undefined') {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.dispatchEvent(new Event('auth:unauthorized'));
+      const url: string = error.config?.url ?? '';
+      const isAuthEndpoint = url.includes('/auth/');
+      if (isAuthEndpoint) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.dispatchEvent(new Event('auth:unauthorized'));
+      }
     }
     return Promise.reject(error);
   },
