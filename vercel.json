@@ -1,7 +1,4 @@
 {
-  "installCommand": "npm install",
-  "buildCommand": "npm run build:frontend",
-  "outputDirectory": "apps/frontend/.next",
   "framework": "nextjs",
   "regions": ["iad1"]
 }
