@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -41,7 +41,15 @@ const step2Schema = z.object({
   modalidad: z.string().optional(),
   valorTarifa: z.number().optional(),
   estacionId: z.string().optional(),
-  documentosAlDia: z.boolean().optional(),
+  estacionNombre: z.string().optional(),
+  documentosAlDia: z.preprocess(
+    (val) => {
+      if (val === 'true') return true;
+      if (val === 'false') return false;
+      return undefined;
+    },
+    z.boolean().optional(),
+  ),
   horario: z.string().optional(),
 }).refine(
   (data) => {
@@ -69,12 +77,22 @@ const step2Schema = z.object({
 
 type Step2Data = z.infer<typeof step2Schema>;
 
+interface Station { id: string; nombre: string; }
+
 function NuevoCensoPage() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
   const [step1Data, setStep1Data] = useState<Step1Data | null>(null);
   const [step2Data, setStep2Data] = useState<Step2Data | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [stations, setStations] = useState<Station[]>([]);
+  const [estacionInput, setEstacionInput] = useState('');
+
+  useEffect(() => {
+    apiClient.get('/api/admin/estaciones').then((res) => {
+      setStations(res.data || []);
+    }).catch(() => {});
+  }, []);
 
   // Step 1 form
   const step1Form = useForm<Step1Data>({
@@ -457,17 +475,31 @@ function NuevoCensoPage() {
 
                   {step2Form.watch('modalidad') === 'ESTACION' && (
                     <div>
-                      <label htmlFor="estacionId" className="block text-sm font-medium text-gray-700 mb-2">
+                      <label htmlFor="estacionInput" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Estación
                       </label>
-                      <select
-                        id="estacionId"
-                        {...step2Form.register('estacionId')}
-                        className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg text-gray-900"
-                      >
-                        <option value="">Seleccionar estación</option>
-                        {/* Stations would be loaded from API */}
-                      </select>
+                      <input
+                        id="estacionInput"
+                        type="text"
+                        list="estaciones-list"
+                        value={estacionInput}
+                        onChange={(e) => {
+                          setEstacionInput(e.target.value);
+                          const match = stations.find(
+                            (s) => s.nombre.toLowerCase() === e.target.value.toLowerCase(),
+                          );
+                          step2Form.setValue('estacionId', match?.id ?? undefined);
+                          step2Form.setValue('estacionNombre', e.target.value);
+                        }}
+                        className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg"
+                        placeholder="Escriba el nombre de la estación"
+                        autoComplete="off"
+                      />
+                      <datalist id="estaciones-list">
+                        {stations.map((s) => (
+                          <option key={s.id} value={s.nombre} />
+                        ))}
+                      </datalist>
                       {step2Form.formState.errors.estacionId && (
                         <p className="mt-1 text-sm text-red-600">
                           {step2Form.formState.errors.estacionId.message}
@@ -482,10 +514,8 @@ function NuevoCensoPage() {
                     </label>
                     <select
                       id="documentosAlDia"
-                      {...step2Form.register('documentosAlDia', {
-                        valueAsNumber: false,
-                      })}
-                      className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg text-gray-900"
+                      {...step2Form.register('documentosAlDia')}
+                      className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg"
                     >
                       <option value="">Seleccionar</option>
                       <option value="true">Sí</option>
