@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import * as PDFDocument from 'pdfkit';
+import PDFDocument from 'pdfkit';
 import * as QRCode from 'qrcode';
 import * as crypto from 'crypto';
 
