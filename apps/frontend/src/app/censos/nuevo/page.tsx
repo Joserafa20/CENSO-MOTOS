@@ -319,7 +319,7 @@ function NuevoCensoPage() {
                       e.target.value = e.target.value.toUpperCase();
                     },
                   })}
-                  className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg uppercase"
+                  className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg text-gray-900 uppercase"
                   placeholder="Ej: ABC123"
                   maxLength={10}
                 />
@@ -337,7 +337,7 @@ function NuevoCensoPage() {
                 <select
                   id="tipoVehiculo"
                   {...step1Form.register('tipoVehiculo')}
-                  className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg"
+                  className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg text-gray-900"
                 >
                   <option value="">Seleccionar tipo</option>
                   <option value="MOTOCICLETA">Motocicleta</option>
@@ -358,7 +358,7 @@ function NuevoCensoPage() {
                   <select
                     id="actividad"
                     {...step1Form.register('actividad')}
-                    className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg"
+                    className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg text-gray-900"
                   >
                     <option value="">Seleccionar actividad</option>
                     <option value="MOTOTAXI">Mototaxi</option>
@@ -400,7 +400,7 @@ function NuevoCensoPage() {
                     <select
                       id="propiedad"
                       {...step2Form.register('propiedad')}
-                      className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg"
+                      className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg text-gray-900"
                     >
                       <option value="">Seleccionar propiedad</option>
                       <option value="PROPIA">Propia</option>
@@ -420,7 +420,7 @@ function NuevoCensoPage() {
                     <select
                       id="modalidad"
                       {...step2Form.register('modalidad')}
-                      className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg"
+                      className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg text-gray-900"
                     >
                       <option value="">Seleccionar modalidad</option>
                       <option value="ESTACION">Estación</option>
@@ -442,7 +442,7 @@ function NuevoCensoPage() {
                         id="valorTarifa"
                         type="number"
                         {...step2Form.register('valorTarifa', { valueAsNumber: true })}
-                        className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg"
+                        className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg text-gray-900"
                         placeholder="Ingrese el valor"
                         min="0.01"
                         step="0.01"
@@ -463,7 +463,7 @@ function NuevoCensoPage() {
                       <select
                         id="estacionId"
                         {...step2Form.register('estacionId')}
-                        className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg"
+                        className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg text-gray-900"
                       >
                         <option value="">Seleccionar estación</option>
                         {/* Stations would be loaded from API */}
@@ -485,7 +485,7 @@ function NuevoCensoPage() {
                       {...step2Form.register('documentosAlDia', {
                         valueAsNumber: false,
                       })}
-                      className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg"
+                      className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg text-gray-900"
                     >
                       <option value="">Seleccionar</option>
                       <option value="true">Sí</option>
@@ -505,7 +505,7 @@ function NuevoCensoPage() {
                     <select
                       id="horario"
                       {...step2Form.register('horario')}
-                      className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg"
+                      className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg text-gray-900"
                     >
                       <option value="">Seleccionar horario</option>
                       <option value="DIURNO">Diurno</option>
@@ -530,7 +530,7 @@ function NuevoCensoPage() {
                     {...step2Form.register('documentosAlDia', {
                       valueAsNumber: false,
                     })}
-                    className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg"
+                    className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg text-gray-900"
                   >
                     <option value="">Seleccionar</option>
                     <option value="true">Sí</option>
@@ -554,7 +554,7 @@ function NuevoCensoPage() {
                       id="actividad-motocarro"
                       type="text"
                       {...step2Form.register('actividad' as any)}
-                      className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg"
+                      className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg text-gray-900"
                       placeholder="Describa la actividad"
                     />
                   </div>
@@ -566,7 +566,7 @@ function NuevoCensoPage() {
                     <select
                       id="propiedad"
                       {...step2Form.register('propiedad')}
-                      className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg"
+                      className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg text-gray-900"
                     >
                       <option value="">Seleccionar propiedad</option>
                       <option value="PROPIA">Propia</option>
@@ -589,7 +589,7 @@ function NuevoCensoPage() {
                         {...step2Form.register('documentosAlDia', {
                           valueAsNumber: false,
                         })}
-                        className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg"
+                        className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg text-gray-900"
                       >
                         <option value="">Seleccionar</option>
                         <option value="true">Sí</option>
