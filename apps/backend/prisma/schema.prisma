@@ -1,0 +1,144 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Rol {
+  ADMIN
+  CENSISTA
+}
+
+enum EstadoCenso {
+  BORRADOR
+  FINALIZADO
+  CERTIFICADO_GENERADO
+}
+
+enum TipoVehiculo {
+  MOTOCICLETA
+  MOTOCARRO
+}
+
+enum ActividadMototaxi {
+  MOTOTAXI
+  FAMILIAR
+}
+
+enum Propiedad {
+  PROPIA
+  PAGA_TARIFA
+}
+
+enum Modalidad {
+  ESTACION
+  CIRCULANTE
+}
+
+enum Horario {
+  DIURNO
+  NOCTURNO
+}
+
+enum EstadoCertificado {
+  VALIDO
+  ANULADO
+}
+
+enum EstadoStation {
+  ACTIVA
+  INACTIVA
+}
+
+model User {
+  id            String    @id @default(uuid())
+  nombre        String
+  documento     String    @unique
+  username      String    @unique
+  passwordHash  String    @map("password_hash")
+  rol           Rol
+  estado        Boolean   @default(true)
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  censos        Census[]  @relation("CensistaCensos")
+  auditLogs     AuditLog[] @relation("UsuarioAuditLogs")
+
+  @@map("users")
+}
+
+model Census {
+  id              String         @id @default(uuid())
+  codigoCenso     String         @unique @map("codigo_censo")
+  placa           String
+  tipoVehiculo    TipoVehiculo   @map("tipo_vehiculo")
+  actividad       ActividadMototaxi?
+  propiedad       Propiedad?
+  modalidad       Modalidad?
+  valorTarifa     Decimal?       @map("valor_tarifa") @db.Decimal(10, 2)
+  estacionId      String?        @map("estacion_id")
+  estacion        Station?       @relation(fields: [estacionId], references: [id])
+  documentosAlDia Boolean?       @map("documentos_al_dia")
+  horario         Horario?
+  censistaId      String         @map("censista_id")
+  censista        User           @relation("CensistaCensos", fields: [censistaId], references: [id])
+  estado          EstadoCenso    @default(BORRADOR)
+  fechaCenso      DateTime       @default(now()) @map("fecha_censo")
+  latitud         Decimal?       @db.Decimal(10, 8)
+  longitud        Decimal?       @db.Decimal(11, 8)
+  createdAt       DateTime       @default(now()) @map("created_at")
+  updatedAt       DateTime       @updatedAt @map("updated_at")
+  certificate     Certificate?
+
+  @@index([placa])
+  @@index([censistaId])
+  @@index([estado])
+  @@index([fechaCenso])
+  @@map("censuses")
+}
+
+model Station {
+  id            String        @id @default(uuid())
+  nombre        String
+  ubicacion     String
+  estado        EstadoStation @default(ACTIVA)
+  observaciones String?
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+  censuses      Census[]
+
+  @@map("stations")
+}
+
+model Certificate {
+  id                String           @id @default(uuid())
+  censusId          String           @unique @map("census_id")
+  census            Census           @relation(fields: [censusId], references: [id])
+  codigoCertificado String           @unique @map("codigo_certificado")
+  qrToken          String           @unique @map("qr_token")
+  fechaGeneracion  DateTime         @default(now()) @map("fecha_generacion")
+  estado            EstadoCertificado @default(VALIDO)
+  createdAt         DateTime         @default(now()) @map("created_at")
+
+  @@map("certificates")
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  usuarioId   String?  @map("usuario_id")
+  usuario     User?    @relation("UsuarioAuditLogs", fields: [usuarioId], references: [id])
+  accion      String
+  entidad     String
+  entidadId   String?  @map("entidad_id")
+  descripcion String?
+  ip          String?
+  userAgent   String?  @map("user_agent")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([usuarioId])
+  @@index([entidad, entidadId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}

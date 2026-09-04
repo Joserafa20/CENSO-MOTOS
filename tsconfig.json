@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@censo-motos/shared/*": ["packages/shared/src/*"],
+      "@censo-motos/backend/*": ["apps/backend/src/*"],
+      "@censo-motos/frontend/*": ["apps/frontend/src/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist", "build", ".next", "coverage"],
+  "references": [
+    { "path": "./packages/shared" },
+    { "path": "./apps/frontend" },
+    { "path": "./apps/backend" }
+  ]
+}
