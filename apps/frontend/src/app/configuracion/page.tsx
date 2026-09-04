@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Settings, Save, Image as ImageIcon, Loader2, Building2, User, MapPin, Hash } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Settings, Save, Image as ImageIcon, Loader2, Building2, User, MapPin, Hash, Upload, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import DashboardWrapper from '../components/dashboard-wrapper';
 import { settingsApi } from '@/lib/api-client';
@@ -69,6 +69,21 @@ function ConfiguracionPage() {
   const [form, setForm] = useState<AlcaldiaConfig>(EMPTY);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
+      toast.error('Solo se permiten archivos JPG o PNG');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setForm((prev) => ({ ...prev, logoUrl: reader.result as string }));
+    };
+    reader.readAsDataURL(file);
+  };
 
   useEffect(() => {
     settingsApi.get()
@@ -177,18 +192,18 @@ function ConfiguracionPage() {
           </div>
         </div>
 
-        {/* Alcalde */}
+        {/* Secretario */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 space-y-4">
           <h2 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide flex items-center gap-2">
-            <User className="w-4 h-4" /> Alcalde / Representante
+            <User className="w-4 h-4" /> Secretario de Tránsito
           </h2>
           <Field
-            label="Nombre del Alcalde"
+            label="Nombre del Secretario"
             icon={<User className="w-4 h-4" />}
             id="alcalde"
             value={form.alcalde}
             onChange={set('alcalde')}
-            placeholder="Nombre completo del alcalde"
+            placeholder="Nombre completo del secretario"
           />
           <Field
             label="Cargo"
@@ -196,7 +211,7 @@ function ConfiguracionPage() {
             id="cargo"
             value={form.cargo}
             onChange={set('cargo')}
-            placeholder="Alcalde Municipal"
+            placeholder="Secretario de Interior con Funciones de Tránsito"
           />
         </div>
 
@@ -205,26 +220,53 @@ function ConfiguracionPage() {
           <h2 className="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide flex items-center gap-2">
             <ImageIcon className="w-4 h-4" /> Escudo / Logo
           </h2>
-          <Field
-            label="URL del logo o escudo"
-            icon={<ImageIcon className="w-4 h-4" />}
-            id="logoUrl"
-            type="url"
-            value={form.logoUrl}
-            onChange={set('logoUrl')}
-            placeholder="https://ejemplo.com/escudo.png"
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png"
+            className="hidden"
+            onChange={handleFileChange}
           />
-          {form.logoUrl && (
+
+          {form.logoUrl ? (
             <div className="flex items-center gap-4">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={form.logoUrl}
                 alt="Vista previa del escudo"
-                className="w-20 h-20 object-contain rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 p-2"
-                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                className="w-24 h-24 object-contain rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 p-2"
               />
-              <p className="text-xs text-gray-500 dark:text-gray-400">Vista previa del escudo que aparecerá en los certificados</p>
+              <div className="flex flex-col gap-2">
+                <p className="text-xs text-gray-500 dark:text-gray-400">Escudo cargado — aparecerá en los certificados</p>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    <Upload className="w-3.5 h-3.5" /> Cambiar imagen
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setForm((prev) => ({ ...prev, logoUrl: '' }))}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                  >
+                    <X className="w-3.5 h-3.5" /> Quitar
+                  </button>
+                </div>
+              </div>
             </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="w-full flex flex-col items-center justify-center gap-2 h-32 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-colors text-gray-500 dark:text-gray-400"
+            >
+              <Upload className="w-6 h-6" />
+              <span className="text-sm font-medium">Subir escudo o logo</span>
+              <span className="text-xs text-gray-400">JPG o PNG</span>
+            </button>
           )}
         </div>
 
