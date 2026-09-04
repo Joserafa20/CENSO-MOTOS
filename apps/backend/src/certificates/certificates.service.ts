@@ -181,6 +181,11 @@ export class CertificatesService {
       qrToken: certificate.qrToken,
       alcaldiaData: {
         nombre: alcaldiaConfig.nombre,
+        nit: alcaldiaConfig.nit ?? undefined,
+        municipio: alcaldiaConfig.municipio ?? undefined,
+        departamento: alcaldiaConfig.departamento ?? undefined,
+        alcalde: alcaldiaConfig.alcalde ?? undefined,
+        cargo: alcaldiaConfig.cargo ?? undefined,
         logoUrl: alcaldiaConfig.logoUrl ?? undefined,
       },
     });

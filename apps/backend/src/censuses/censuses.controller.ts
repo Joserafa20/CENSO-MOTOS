@@ -84,15 +84,16 @@ export class CensusesController {
   }
 
   @Get(':id')
-  @Roles('CENSISTA')
+  @Roles('CENSISTA', 'ADMIN')
   @ApiOperation({ summary: 'Obtener un censo por ID' })
   @ApiResponse({ status: 200, description: 'Censo encontrado' })
   @ApiResponse({ status: 404, description: 'Censo no encontrado' })
   async findOne(
     @Param('id') id: string,
     @CurrentUser('id') userId: string,
+    @CurrentUser('rol') userRol: string,
   ) {
-    return this.censusesService.findOne(id, userId);
+    return this.censusesService.findOne(id, userId, userRol);
   }
 
   @Put(':id')

@@ -122,7 +122,7 @@ export class CensusesService {
     return census;
   }
 
-  async findOne(id: string, userId: string) {
+  async findOne(id: string, userId: string, userRol?: string) {
     const census = await this.prisma.census.findUnique({
       where: { id },
       include: {
@@ -138,7 +138,7 @@ export class CensusesService {
       throw new NotFoundException('Censo no encontrado');
     }
 
-    if (census.censistaId !== userId) {
+    if (userRol !== 'ADMIN' && census.censistaId !== userId) {
       throw new ForbiddenException('No tiene acceso a este censo');
     }
 
