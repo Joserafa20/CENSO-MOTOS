@@ -3,7 +3,7 @@ import { Propiedad } from '@prisma/client';
 import {
   ValidationResult,
   RequiredFieldsResult,
-} from '../rules/types/rule-result';
+} from '../types/rule-result';
 
 interface MotocarroData {
   tipoVehiculo: 'MOTOCARRO';

@@ -1,7 +1,7 @@
 import {
   ValidationResult,
   RequiredFieldsResult,
-} from '../rules/types/rule-result';
+} from '../types/rule-result';
 
 interface FamiliarData {
   tipoVehiculo: 'MOTOCICLETA';

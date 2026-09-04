@@ -132,16 +132,14 @@ export class CertificatePdfService {
       doc.moveDown(1);
 
       // QR Code
-      try {
-        const qrDataUrl = await QRCode.toDataURL(validationUrl, {
-          width: 150,
-          margin: 2,
-          color: {
-            dark: '#000000',
-            light: '#FFFFFF',
-          },
-        });
-
+      QRCode.toDataURL(validationUrl, {
+        width: 150,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF',
+        },
+      }).then((qrDataUrl) => {
         // Convert data URL to buffer
         const base64Data = qrDataUrl.replace(/^data:image\/\w+;base64,/, '');
         const qrBuffer = Buffer.from(base64Data, 'base64');
@@ -151,13 +149,13 @@ export class CertificatePdfService {
         doc.image(qrBuffer, qrX, doc.y, { width: 150, height: 150 });
 
         doc.moveDown(1);
-      } catch (error) {
+      }).catch((error) => {
         this.logger.error('Error generating QR code', error);
         doc
           .fontSize(10)
           .text('[Error al generar código QR]', { align: 'center' });
         doc.moveDown(1);
-      }
+      });
 
       // Validation code
       doc
@@ -220,7 +218,7 @@ export class CertificatePdfService {
     });
   }
 
-  private drawLogoPlaceholder(doc: PDFKit.PDFDocument): void {
+  private drawLogoPlaceholder(doc: any): void {
     const centerX = doc.page.width / 2;
 
     // Draw rectangle

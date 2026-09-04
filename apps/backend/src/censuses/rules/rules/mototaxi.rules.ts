@@ -3,7 +3,7 @@ import { ActividadMototaxi, Propiedad, Modalidad, Horario } from '@prisma/client
 import {
   ValidationResult,
   RequiredFieldsResult,
-} from '../rules/types/rule-result';
+} from '../types/rule-result';
 
 interface MototaxiData {
   tipoVehiculo: 'MOTOCICLETA';

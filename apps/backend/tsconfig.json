@@ -12,13 +12,13 @@
     "resolveJsonModule": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "declaration": true,
+    "declaration": false,
     "removeComments": true,
     "allowJs": true,
     "incremental": true,
     "outDir": "./dist",
     "rootDir": "./src"
   },
-  "include": ["src/**/*", "test/**/*"],
-  "exclude": ["node_modules", "dist", "build", "coverage"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "build", "coverage", "**/*.spec.ts", "**/__tests__/**"]
 }

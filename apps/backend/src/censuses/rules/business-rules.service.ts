@@ -3,19 +3,19 @@ import { Injectable } from '@nestjs/common';
 import {
   ValidationResult,
   RequiredFieldsResult,
-} from './rules/types/rule-result';
+} from './types/rule-result';
 import {
   getMototaxiRequiredFields,
   validateMototaxiData,
-} from './rules/rules/mototaxi.rules';
+} from './rules/mototaxi.rules';
 import {
   getMotocarroRequiredFields,
   validateMotocarroData,
-} from './rules/rules/motocarro.rules';
+} from './rules/motocarro.rules';
 import {
   getFamiliarRequiredFields,
   validateFamiliarData,
-} from './rules/rules/familiar.rules';
+} from './rules/familiar.rules';
 
 @Injectable()
 export class BusinessRulesService {
