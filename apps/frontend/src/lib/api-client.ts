@@ -80,6 +80,20 @@ export const censusesApi = {
     return apiClient.get(`/api/censuses?${searchParams.toString()}`);
   },
 
+  findAllAdmin: (params?: {
+    estado?: string;
+    search?: string;
+    page?: number;
+    limit?: number;
+  }) => {
+    const searchParams = new URLSearchParams();
+    if (params?.estado) searchParams.append('estado', params.estado);
+    if (params?.search) searchParams.append('search', params.search);
+    if (params?.page) searchParams.append('page', params.page.toString());
+    if (params?.limit) searchParams.append('limit', params.limit.toString());
+    return apiClient.get(`/api/censuses/admin/all?${searchParams.toString()}`);
+  },
+
   findOne: (id: string) => apiClient.get(`/api/censuses/${id}`),
 
   update: (
@@ -194,4 +208,24 @@ export const censistasApi = {
   ) => apiClient.put(`/api/admin/censistas/${id}`, data),
 
   toggleStatus: (id: string) => apiClient.patch(`/api/admin/censistas/${id}/status`),
+};
+
+export const certificatesApi = {
+  findAllAdmin: (params?: {
+    search?: string;
+    page?: number;
+    limit?: number;
+  }) => {
+    const searchParams = new URLSearchParams();
+    if (params?.search) searchParams.append('search', params.search);
+    if (params?.page) searchParams.append('page', params.page.toString());
+    if (params?.limit) searchParams.append('limit', params.limit.toString());
+    return apiClient.get(`/api/certificados/admin/all?${searchParams.toString()}`);
+  },
+
+  findOne: (id: string) => apiClient.get(`/api/certificados/${id}`),
+
+  download: (id: string) => apiClient.get(`/api/certificados/${id}/download`, { responseType: 'blob' }),
+
+  generate: (censusId: string) => apiClient.post(`/api/certificados/generate/${censusId}`),
 };

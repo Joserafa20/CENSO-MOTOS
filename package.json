@@ -28,12 +28,15 @@
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
+    "eslint-config-prettier": "^9.1.0",
     "prettier": "^3.2.5",
-    "typescript": "^5.3.3",
-    "eslint-config-prettier": "^9.1.0"
+    "typescript": "^5.3.3"
   },
   "engines": {
     "node": ">=20.0.0"
   },
-  "packageManager": "npm@10.5.0"
+  "packageManager": "npm@10.5.0",
+  "dependencies": {
+    "bcryptjs": "^3.0.3"
+  }
 }

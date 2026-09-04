@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { Home, FileText, Users, LogOut, Menu, X, User, MapPin } from 'lucide-react';
+import { Home, FileText, Users, LogOut, Menu, X, User, MapPin, CheckCircle, Award, Shield } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth-store';
 
 interface NavLink {
@@ -24,6 +24,18 @@ const navLinks: NavLink[] = [
     icon: <FileText className="w-5 h-5" />,
   },
   {
+    href: '/aprobar-censos',
+    label: 'Aprobar Censos',
+    icon: <CheckCircle className="w-5 h-5" />,
+    roles: ['ADMIN'],
+  },
+  {
+    href: '/certificados',
+    label: 'Certificados',
+    icon: <Award className="w-5 h-5" />,
+    roles: ['ADMIN'],
+  },
+  {
     href: '/estaciones',
     label: 'Estaciones',
     icon: <MapPin className="w-5 h-5" />,
@@ -33,6 +45,12 @@ const navLinks: NavLink[] = [
     href: '/censistas',
     label: 'Censistas',
     icon: <Users className="w-5 h-5" />,
+    roles: ['ADMIN'],
+  },
+  {
+    href: '/usuarios',
+    label: 'Usuarios',
+    icon: <Shield className="w-5 h-5" />,
     roles: ['ADMIN'],
   },
 ];
@@ -219,7 +237,7 @@ export default function DashboardWrapper({
       {/* Mobile Bottom Navigation */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
         <nav className="flex justify-around py-2">
-          {filteredLinks.slice(0, 4).map((link) => (
+          {filteredLinks.slice(0, 5).map((link) => (
             <a
               key={link.href}
               href={link.href}

@@ -5,6 +5,7 @@ import {
   Param,
   Body,
   Res,
+  Query,
   UseGuards,
   HttpCode,
   HttpStatus,
@@ -75,5 +76,23 @@ export class CertificatesController {
     });
 
     res.send(result.buffer);
+  }
+
+  @Get('admin/all')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @ApiOperation({ summary: 'Listar todos los certificados (admin)' })
+  @ApiResponse({ status: 200, description: 'Lista de certificados' })
+  async findAllAdmin(
+    @Query('search') search?: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.certificatesService.findAllAdmin({
+      search,
+      page: page ? parseInt(page, 10) : undefined,
+      limit: limit ? parseInt(limit, 10) : undefined,
+    });
   }
 }

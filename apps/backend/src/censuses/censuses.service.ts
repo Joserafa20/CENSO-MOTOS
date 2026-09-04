@@ -207,6 +207,69 @@ export class CensusesService {
     };
   }
 
+  async findAllAdmin(
+    filters?: {
+      estado?: string;
+      search?: string;
+      fechaDesde?: string;
+      fechaHasta?: string;
+      page?: number;
+      limit?: number;
+    },
+  ) {
+    const page = filters?.page || 1;
+    const limit = filters?.limit || 20;
+    const skip = (page - 1) * limit;
+
+    const where: any = {};
+
+    if (filters?.estado) {
+      where.estado = filters.estado;
+    }
+
+    if (filters?.search) {
+      where.OR = [
+        { placa: { contains: filters.search, mode: 'insensitive' } },
+        { codigoCenso: { contains: filters.search, mode: 'insensitive' } },
+      ];
+    }
+
+    if (filters?.fechaDesde || filters?.fechaHasta) {
+      where.fechaCenso = {};
+      if (filters.fechaDesde) {
+        where.fechaCenso.gte = new Date(filters.fechaDesde);
+      }
+      if (filters.fechaHasta) {
+        where.fechaCenso.lte = new Date(filters.fechaHasta);
+      }
+    }
+
+    const [censuses, total] = await Promise.all([
+      this.prisma.census.findMany({
+        where,
+        include: {
+          estacion: { select: { id: true, nombre: true } },
+          censista: { select: { id: true, nombre: true, username: true } },
+          certificate: { select: { id: true, codigoCertificado: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit,
+      }),
+      this.prisma.census.count({ where }),
+    ]);
+
+    return {
+      data: censuses,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+
   async update(
     id: string,
     updateCensusDto: UpdateCensusDto,

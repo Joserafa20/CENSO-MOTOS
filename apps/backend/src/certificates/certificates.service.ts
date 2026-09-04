@@ -210,6 +210,61 @@ export class CertificatesService {
     return certificate;
   }
 
+  async findAllAdmin(
+    filters?: {
+      search?: string;
+      page?: number;
+      limit?: number;
+    },
+  ) {
+    const page = filters?.page || 1;
+    const limit = filters?.limit || 20;
+    const skip = (page - 1) * limit;
+
+    const where: any = {};
+
+    if (filters?.search) {
+      where.OR = [
+        { codigoCertificado: { contains: filters.search, mode: 'insensitive' } },
+        { census: { placa: { contains: filters.search, mode: 'insensitive' } } },
+        { census: { codigoCenso: { contains: filters.search, mode: 'insensitive' } } },
+      ];
+    }
+
+    const [certificates, total] = await Promise.all([
+      this.prisma.certificate.findMany({
+        where,
+        include: {
+          census: {
+            select: {
+              id: true,
+              codigoCenso: true,
+              placa: true,
+              tipoVehiculo: true,
+              fechaCenso: true,
+              estado: true,
+              censista: { select: { nombre: true } },
+            },
+          },
+        },
+        orderBy: { fechaGeneracion: 'desc' },
+        skip,
+        take: limit,
+      }),
+      this.prisma.certificate.count({ where }),
+    ]);
+
+    return {
+      data: certificates,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+
   private async generateCodigoCertificado(): Promise<string> {
     const year = new Date().getFullYear();
 

@@ -135,4 +135,25 @@ export class CensusesController {
       req.headers['user-agent'],
     );
   }
+
+  @Get('admin/all')
+  @Roles('ADMIN')
+  @ApiOperation({ summary: 'Listar todos los censos (admin)' })
+  @ApiQuery({ name: 'estado', required: false, enum: ['BORRADOR', 'FINALIZADO', 'CERTIFICADO_GENERADO'] })
+  @ApiQuery({ name: 'search', required: false, type: String })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  async findAllAdmin(
+    @Query('estado') estado?: string,
+    @Query('search') search?: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.censusesService.findAllAdmin({
+      estado,
+      search,
+      page: page ? parseInt(page, 10) : undefined,
+      limit: limit ? parseInt(limit, 10) : undefined,
+    });
+  }
 }
