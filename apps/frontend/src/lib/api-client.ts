@@ -29,16 +29,17 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-// Response interceptor: handle 401 (redirect to login)
+// Response interceptor: on 401, clear credentials and fire a custom event
+// so DashboardWrapper's route guard handles the redirect gracefully.
+// Avoid window.location.href here — a hard navigation on any transient 401
+// (e.g. Render cold-start hiccup) would kick the user out of a valid session.
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        window.location.href = '/login';
-      }
+    if (error.response?.status === 401 && typeof window !== 'undefined') {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.dispatchEvent(new Event('auth:unauthorized'));
     }
     return Promise.reject(error);
   },

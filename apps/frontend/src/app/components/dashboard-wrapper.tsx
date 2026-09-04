@@ -48,6 +48,17 @@ export default function DashboardWrapper({ children }: Readonly<{ children: Reac
     }
   }, [isAuthenticated, initialized, router]);
 
+  // Listen for 401 events fired by the api-client interceptor so we can
+  // log out and redirect gracefully instead of doing a hard window.location.
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      logout();
+      router.push('/login');
+    };
+    window.addEventListener('auth:unauthorized', handleUnauthorized);
+    return () => window.removeEventListener('auth:unauthorized', handleUnauthorized);
+  }, [logout, router]);
+
   const handleLogout = () => {
     logout();
     router.push('/login');
