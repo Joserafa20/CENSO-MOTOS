@@ -10,7 +10,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditService } from '../audit/audit.service';
 import { CertificatesService } from '../certificates/certificates.service';
-import { BusinessRulesService } from '../rules/business-rules.service';
+import { BusinessRulesService } from './rules/business-rules.service';
 import { CreateCensusDto } from './dto/create-census.dto';
 import { UpdateCensusDto } from './dto/update-census.dto';
 
