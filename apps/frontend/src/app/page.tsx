@@ -25,6 +25,8 @@ interface DashboardStats {
   mototaxisCirculantes: number;
   mototaxisDocumentosAlDia: number;
   mototaxisSinDocumentos: number;
+  totalDocumentosAlDia: number;
+  totalSinDocumentos: number;
   motocarrosPropios: number;
   motocarrosPaganTarifa: number;
   censosHoy: number;
@@ -45,6 +47,7 @@ const ZERO_STATS: DashboardStats = {
   totalMototaxis: 0, totalFamiliares: 0, mototaxisPropios: 0,
   mototaxisPaganTarifa: 0, mototaxisEstacion: 0, mototaxisCirculantes: 0,
   mototaxisDocumentosAlDia: 0, mototaxisSinDocumentos: 0,
+  totalDocumentosAlDia: 0, totalSinDocumentos: 0,
   motocarrosPropios: 0, motocarrosPaganTarifa: 0,
   censosHoy: 0, censosSemana: 0,
 };
@@ -239,7 +242,7 @@ function DashboardPage() {
 
       {/* ── Middle Row ── */}
       {!isLoading && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 
           {/* Mototaxis breakdown */}
           <CardShell
@@ -254,7 +257,37 @@ function DashboardPage() {
             </div>
           </CardShell>
 
-          {/* Documentación */}
+          {/* Familiares breakdown */}
+          <CardShell
+            title="Familiares"
+            icon={<span className="w-2.5 h-2.5 rounded-full bg-sky-500 inline-block" />}
+          >
+            <div className="flex items-center justify-around h-[calc(100%-2rem)]">
+              <div className="text-center">
+                <div className="w-14 h-14 bg-sky-100 dark:bg-sky-900/40 rounded-2xl flex items-center justify-center mx-auto mb-2">
+                  <Users className="w-7 h-7 text-sky-600 dark:text-sky-400" />
+                </div>
+                <p className="text-4xl font-extrabold text-sky-600 dark:text-sky-400">{s.totalFamiliares}</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Motos familiares</p>
+              </div>
+              <div className="w-px h-16 bg-gray-200 dark:bg-gray-700" />
+              <div className="text-center">
+                <p className="text-xs text-gray-400 dark:text-gray-500 mb-1">Del total de motos</p>
+                <p className="text-3xl font-extrabold text-gray-700 dark:text-gray-200">
+                  {s.totalMotocicletas > 0 ? Math.round((s.totalFamiliares / s.totalMotocicletas) * 100) : 0}%
+                </p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">son familiares</p>
+              </div>
+            </div>
+          </CardShell>
+        </div>
+      )}
+
+      {/* ── Bottom Row ── */}
+      {!isLoading && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+          {/* Documentación — todos los censos */}
           <CardShell
             title="Documentación"
             icon={<span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" />}
@@ -264,7 +297,7 @@ function DashboardPage() {
                 <div className="w-14 h-14 bg-emerald-100 dark:bg-emerald-900/40 rounded-2xl flex items-center justify-center mx-auto mb-2">
                   <CheckCircle className="w-7 h-7 text-emerald-600 dark:text-emerald-400" />
                 </div>
-                <p className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">{s.mototaxisDocumentosAlDia}</p>
+                <p className="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400">{s.totalDocumentosAlDia}</p>
                 <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Al día</p>
               </div>
               <div className="w-px h-16 bg-gray-200 dark:bg-gray-700" />
@@ -272,7 +305,7 @@ function DashboardPage() {
                 <div className="w-14 h-14 bg-red-100 dark:bg-red-900/40 rounded-2xl flex items-center justify-center mx-auto mb-2">
                   <XCircle className="w-7 h-7 text-red-500 dark:text-red-400" />
                 </div>
-                <p className="text-3xl font-extrabold text-red-500 dark:text-red-400">{s.mototaxisSinDocumentos}</p>
+                <p className="text-3xl font-extrabold text-red-500 dark:text-red-400">{s.totalSinDocumentos}</p>
                 <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Sin documentos</p>
               </div>
             </div>
@@ -286,12 +319,6 @@ function DashboardPage() {
             <div className="space-y-4">
               <ProgressRow label="Propios" value={s.motocarrosPropios} total={s.totalMotocarros} color="bg-violet-500" />
               <ProgressRow label="Pagan Tarifa" value={s.motocarrosPaganTarifa} total={s.totalMotocarros} color="bg-orange-500" />
-            </div>
-            <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
-              <div className="flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500">
-                <Users className="w-3.5 h-3.5" />
-                <span>Familiares: <strong className="text-gray-700 dark:text-gray-300">{s.totalFamiliares}</strong></span>
-              </div>
             </div>
           </CardShell>
         </div>
