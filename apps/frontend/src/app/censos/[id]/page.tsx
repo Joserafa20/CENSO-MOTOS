@@ -10,6 +10,7 @@ import {
   CheckCircle,
   Clock,
   AlertCircle,
+  ShieldCheck,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -51,6 +52,7 @@ function CensusDetailPage() {
   const [census, setCensus] = useState<CensusDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isApproving, setIsApproving] = useState(false);
 
   useEffect(() => {
     if (params.id) {
@@ -66,6 +68,20 @@ function CensusDetailPage() {
       console.error('Error fetching census', err);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleApproveCensus = async () => {
+    if (!census) return;
+    setIsApproving(true);
+    try {
+      const response = await apiClient.post(`/api/censuses/${census.id}/finalize`, {});
+      setCensus((prev) => prev ? { ...prev, ...response.data, certificate: response.data.certificate ?? prev.certificate } : prev);
+    } catch (err) {
+      console.error('Error aprobando censo', err);
+      alert('Error al aprobar el censo. Intenta de nuevo.');
+    } finally {
+      setIsApproving(false);
     }
   };
 
@@ -226,6 +242,16 @@ function CensusDetailPage() {
             >
               <Edit2 className="h-4 w-4 mr-2" />
               Editar
+            </button>
+          )}
+          {census.estado === 'BORRADOR' && user?.rol === 'ADMIN' && (
+            <button
+              onClick={handleApproveCensus}
+              disabled={isApproving}
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 disabled:opacity-50"
+            >
+              <ShieldCheck className="h-4 w-4 mr-2" />
+              {isApproving ? 'Aprobando...' : 'Aprobar Censo'}
             </button>
           )}
           {census.certificate && user?.rol === 'ADMIN' && (
