@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth-store';
 import { useTheme } from '@/components/theme-provider';
+import { settingsApi } from '@/lib/api-client';
 
 interface NavLink {
   href: string;
@@ -31,6 +32,13 @@ export default function DashboardWrapper({ children }: Readonly<{ children: Reac
   const { user, isAuthenticated, logout, initialized } = useAuthStore();
   const { theme, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    settingsApi.get().then((res) => {
+      if (res.data?.logoUrl) setLogoUrl(res.data.logoUrl);
+    }).catch(() => {});
+  }, []);
 
   useEffect(() => {
     useAuthStore.getState().initialize();
@@ -91,9 +99,14 @@ export default function DashboardWrapper({ children }: Readonly<{ children: Reac
           {/* Logo */}
           <div className="flex items-center justify-between flex-shrink-0 px-4 mb-8">
             <div className="flex items-center">
-              <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-md">
-                <span className="text-white font-bold text-lg">CM</span>
-              </div>
+              {logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={logoUrl} alt="Logo" className="w-10 h-10 object-contain rounded-xl" />
+              ) : (
+                <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-md">
+                  <span className="text-white font-bold text-lg">CM</span>
+                </div>
+              )}
               <div className="ml-3">
                 <p className="text-sm font-bold text-gray-900 dark:text-white">Censo Motos</p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">Sabanalarga</p>
@@ -158,9 +171,14 @@ export default function DashboardWrapper({ children }: Readonly<{ children: Reac
         <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow">
-                <span className="text-white font-bold text-sm">CM</span>
-              </div>
+              {logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={logoUrl} alt="Logo" className="w-8 h-8 object-contain rounded-lg" />
+              ) : (
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow">
+                  <span className="text-white font-bold text-sm">CM</span>
+                </div>
+              )}
               <span className="ml-2 text-sm font-bold text-gray-900 dark:text-white">Censo Motos</span>
             </div>
             <div className="flex items-center gap-2">

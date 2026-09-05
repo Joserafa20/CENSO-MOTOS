@@ -285,6 +285,16 @@ export class CertificatePdfService {
 
   private async fetchLogoBuffer(url?: string): Promise<Buffer | null> {
     if (!url) return null;
+    // Handle base64 data URLs (e.g. from file upload in the config page)
+    if (url.startsWith('data:')) {
+      try {
+        const base64Data = url.split(',')[1];
+        if (!base64Data) return null;
+        return Buffer.from(base64Data, 'base64');
+      } catch {
+        return null;
+      }
+    }
     return new Promise((resolve) => {
       const client = url.startsWith('https') ? https : http;
       client.get(url, (res) => {
