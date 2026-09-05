@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,6 +10,7 @@ import { Loader2, LogIn, Eye, EyeOff } from 'lucide-react';
 
 import { useAuthStore } from '../../stores/auth-store';
 import AuthWrapper from '../components/auth-wrapper';
+import { settingsApi } from '@/lib/api-client';
 
 const loginSchema = z.object({
   username: z.string().min(1, 'El nombre de usuario es requerido'),
@@ -22,6 +23,15 @@ function LoginPage() {
   const router = useRouter();
   const { login, isLoading } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [alcaldiaNombre, setAlcaldiaNombre] = useState('Alcaldía Municipal');
+
+  useEffect(() => {
+    settingsApi.get().then((res) => {
+      if (res.data?.logoUrl) setLogoUrl(res.data.logoUrl);
+      if (res.data?.nombre) setAlcaldiaNombre(res.data.nombre);
+    }).catch(() => {});
+  }, []);
 
   const {
     register,
@@ -45,14 +55,28 @@ function LoginPage() {
 
   return (
     <div className="text-center">
-      <div className="mx-auto h-16 w-16 rounded-full bg-primary-600 flex items-center justify-center">
-        <LogIn className="h-8 w-8 text-white" />
+      <div className="mx-auto flex items-center justify-center">
+        {logoUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={logoUrl}
+            alt="Escudo de la Alcaldía"
+            className="h-24 w-24 object-contain"
+          />
+        ) : (
+          <div className="h-16 w-16 rounded-full bg-primary-600 flex items-center justify-center">
+            <LogIn className="h-8 w-8 text-white" />
+          </div>
+        )}
       </div>
 
-      <h2 className="mt-6 text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
-        Censo de Motos
+      <h2 className="mt-4 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+        {alcaldiaNombre}
       </h2>
-      <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+      <p className="mt-1 text-base font-semibold text-blue-700 dark:text-blue-400">
+        Censo Municipal de Motos
+      </p>
+      <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
         Inicia sesión para acceder al sistema
       </p>
 
