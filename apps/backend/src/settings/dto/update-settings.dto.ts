@@ -40,7 +40,11 @@ export class UpdateSettingsDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsUrl()
-  @MaxLength(1000)
+  @IsString()
   logoUrl?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  selloUrl?: string;
 }

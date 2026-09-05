@@ -187,6 +187,7 @@ export class CertificatesService {
         alcalde: alcaldiaConfig.alcalde ?? undefined,
         cargo: alcaldiaConfig.cargo ?? undefined,
         logoUrl: alcaldiaConfig.logoUrl ?? undefined,
+        selloUrl: (alcaldiaConfig as any).selloUrl ?? undefined,
       },
     });
 

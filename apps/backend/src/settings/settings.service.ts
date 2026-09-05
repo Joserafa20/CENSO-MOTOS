@@ -13,6 +13,7 @@ const DEFAULTS = {
   alcalde: null,
   cargo: null,
   logoUrl: null,
+  selloUrl: null,
 };
 
 @Injectable()
@@ -36,6 +37,7 @@ export class SettingsService {
         alcalde: dto.alcalde ?? null,
         cargo: dto.cargo ?? null,
         logoUrl: dto.logoUrl ?? null,
+        selloUrl: dto.selloUrl ?? null,
       },
       update: {
         ...(dto.nombre !== undefined && { nombre: dto.nombre }),
@@ -45,6 +47,7 @@ export class SettingsService {
         ...(dto.alcalde !== undefined && { alcalde: dto.alcalde }),
         ...(dto.cargo !== undefined && { cargo: dto.cargo }),
         ...(dto.logoUrl !== undefined && { logoUrl: dto.logoUrl }),
+        ...(dto.selloUrl !== undefined && { selloUrl: dto.selloUrl }),
       },
     });
   }

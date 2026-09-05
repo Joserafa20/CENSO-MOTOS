@@ -133,6 +133,7 @@ model ConfiguracionAlcaldia {
   alcalde      String?
   cargo        String?
   logoUrl      String?  @map("logo_url")
+  selloUrl     String?  @map("sello_url")
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 

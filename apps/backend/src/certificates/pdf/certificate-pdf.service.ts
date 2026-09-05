@@ -37,15 +37,17 @@ export class CertificatePdfService {
       alcalde?: string;
       cargo?: string;
       logoUrl?: string;
+      selloUrl?: string;
     };
   }): Promise<Buffer> {
     const frontendUrl =
       this.configService.get<string>('FRONTEND_URL') || 'https://censo-motos-frontend-chi.vercel.app';
     const validationUrl = `${frontendUrl}/validar/${params.qrToken}`;
 
-    const [qrBuffer, logoBuffer] = await Promise.all([
+    const [qrBuffer, logoBuffer, selloBuffer] = await Promise.all([
       this.generateQrBuffer(validationUrl),
       this.fetchLogoBuffer(params.alcaldiaData?.logoUrl),
+      this.fetchLogoBuffer(params.alcaldiaData?.selloUrl),
     ]);
 
     return new Promise((resolve, reject) => {
@@ -214,8 +216,8 @@ export class CertificatePdfService {
       const sealX = M + sigColW + 24;
       const sealSize = 64;
       const sealImgX = sealX + (sigColW - sealSize) / 2;
-      if (logoBuffer) {
-        doc.image(logoBuffer, sealImgX, sigY, { width: sealSize, height: sealSize, fit: [sealSize, sealSize] });
+      if (selloBuffer) {
+        doc.image(selloBuffer, sealImgX, sigY, { width: sealSize, height: sealSize, fit: [sealSize, sealSize] });
       } else {
         doc.circle(sealX + sigColW / 2, sigY + 32, 30).strokeColor(BLUE_DARK).lineWidth(1.5).stroke();
         doc.circle(sealX + sigColW / 2, sigY + 32, 24).strokeColor(BLUE_DARK).lineWidth(0.5).stroke();
