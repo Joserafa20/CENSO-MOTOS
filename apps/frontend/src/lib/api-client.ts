@@ -233,6 +233,7 @@ export const settingsApi = {
     alcalde?: string;
     cargo?: string;
     logoUrl?: string;
+    selloUrl?: string;
   }) => apiClient.put('/api/admin/configuracion', data),
 };
 
