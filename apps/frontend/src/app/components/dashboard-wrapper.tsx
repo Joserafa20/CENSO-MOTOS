@@ -73,6 +73,12 @@ export default function DashboardWrapper({ children }: Readonly<{ children: Reac
 
   const isActiveLink = (href: string) => {
     if (href === '/') return pathname === '/' || pathname === '/dashboard';
+    if (href === '/aprobar-censos' && pathname.startsWith('/censos/')) {
+      if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('from') === 'aprobar-censos') return true;
+    }
+    if (href === '/censos' && pathname.startsWith('/censos/')) {
+      if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('from') === 'aprobar-censos') return false;
+    }
     return pathname.startsWith(href);
   };
 

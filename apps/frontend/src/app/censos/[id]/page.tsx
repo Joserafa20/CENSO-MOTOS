@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import {
   ArrowLeft,
   FileText,
@@ -48,6 +48,8 @@ interface CensusDetail {
 function CensusDetailPage() {
   const router = useRouter();
   const params = useParams();
+  const searchParams = useSearchParams();
+  const fromAprobar = searchParams.get('from') === 'aprobar-censos';
   const { user } = useAuthStore();
   const [census, setCensus] = useState<CensusDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -223,7 +225,7 @@ function CensusDetailPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center">
           <button
-            onClick={() => router.push('/censos')}
+            onClick={() => router.push(fromAprobar ? '/aprobar-censos' : '/censos')}
             className="mr-3 p-2 hover:bg-gray-100 rounded-lg"
           >
             <ArrowLeft className="h-5 w-5 text-gray-600" />

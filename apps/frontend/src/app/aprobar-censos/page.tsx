@@ -204,7 +204,7 @@ function AprobarCensosPage() {
                   <tr
                     key={census.id}
                     className="hover:bg-gray-50 cursor-pointer"
-                    onClick={() => router.push(`/censos/${census.id}`)}
+                    onClick={() => router.push(`/censos/${census.id}?from=aprobar-censos`)}
                   >
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">
                       {census.codigoCenso}
@@ -233,7 +233,7 @@ function AprobarCensosPage() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          router.push(`/censos/${census.id}`);
+                          router.push(`/censos/${census.id}?from=aprobar-censos`);
                         }}
                         className="text-blue-600 hover:text-blue-900"
                       >
@@ -266,7 +266,7 @@ function AprobarCensosPage() {
               <div
                 key={census.id}
                 className="bg-white rounded-lg shadow p-4 cursor-pointer hover:shadow-md transition-shadow"
-                onClick={() => router.push(`/censos/${census.id}`)}
+                onClick={() => router.push(`/censos/${census.id}?from=aprobar-censos`)}
               >
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-sm font-medium text-blue-600">
