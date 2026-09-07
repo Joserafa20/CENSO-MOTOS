@@ -15,7 +15,7 @@ export class SettingsController {
   constructor(private readonly settingsService: SettingsService) {}
 
   @Get()
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'CENSISTA')
   @ApiOperation({ summary: 'Obtener configuración de la Alcaldía' })
   get() {
     return this.settingsService.get();
