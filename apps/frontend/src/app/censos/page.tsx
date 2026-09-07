@@ -30,7 +30,7 @@ interface PaginationMeta {
 
 function CensosPage() {
   const router = useRouter();
-  const { user } = useAuthStore();
+  const { user, initialized } = useAuthStore();
   const isAdmin = user?.rol === 'ADMIN';
   const [censuses, setCensuses] = useState<Census[]>([]);
   const [meta, setMeta] = useState<PaginationMeta | null>(null);
@@ -62,8 +62,9 @@ function CensosPage() {
   };
 
   useEffect(() => {
+    if (!initialized) return;
     fetchCensuses();
-  }, [search, statusFilter, currentPage]);
+  }, [search, statusFilter, currentPage, initialized]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

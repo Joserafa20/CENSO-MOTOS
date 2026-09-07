@@ -37,6 +37,7 @@ const step1Schema = z.object({
 type Step1Data = z.infer<typeof step1Schema>;
 
 const step2Schema = z.object({
+  actividad: z.string().optional(),
   propiedad: z.string().optional(),
   modalidad: z.string().optional(),
   valorTarifa: z.number().optional(),
@@ -115,7 +116,9 @@ function NuevoCensoPage() {
       const payload = {
         placa: step1Data.placa,
         tipoVehiculo: step1Data.tipoVehiculo,
-        actividad: step1Data.actividad || undefined,
+        actividad: step1Data.tipoVehiculo === 'MOTOCARRO'
+          ? (step2Data.actividad || undefined)
+          : (step1Data.actividad || undefined),
         propiedad: step2Data.propiedad || undefined,
         modalidad: step2Data.modalidad || undefined,
         valorTarifa: step2Data.valorTarifa || undefined,
@@ -538,13 +541,20 @@ function NuevoCensoPage() {
                     <label htmlFor="actividad-motocarro" className="block text-sm font-medium text-gray-700 mb-2">
                       Actividad
                     </label>
-                    <input
+                    <select
                       id="actividad-motocarro"
-                      type="text"
-                      {...step2Form.register('actividad' as any)}
+                      {...step2Form.register('actividad')}
                       className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg text-gray-900"
-                      placeholder="Describa la actividad"
-                    />
+                    >
+                      <option value="">Seleccionar actividad</option>
+                      <option value="MOTOTAXI">Mototaxi</option>
+                      <option value="FAMILIAR">Familiar</option>
+                    </select>
+                    {step2Form.formState.errors.actividad && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {step2Form.formState.errors.actividad.message}
+                      </p>
+                    )}
                   </div>
 
                   <div>
