@@ -8,6 +8,7 @@ import { es } from 'date-fns/locale';
 
 import apiClient from '@/lib/api-client';
 import toast from 'react-hot-toast';
+import { useAuthStore } from '@/stores/auth-store';
 import DashboardWrapper from '../components/dashboard-wrapper';
 
 interface Census {
@@ -31,6 +32,7 @@ interface PaginationMeta {
 
 function AprobarCensosPage() {
   const router = useRouter();
+  const { initialized } = useAuthStore();
   const [censuses, setCensuses] = useState<Census[]>([]);
   const [meta, setMeta] = useState<PaginationMeta | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -58,8 +60,9 @@ function AprobarCensosPage() {
   };
 
   useEffect(() => {
+    if (!initialized) return;
     fetchCensuses();
-  }, [search, statusFilter, currentPage]);
+  }, [search, statusFilter, currentPage, initialized]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
