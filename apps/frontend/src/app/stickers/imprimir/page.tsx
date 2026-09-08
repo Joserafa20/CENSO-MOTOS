@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Printer, ArrowLeft, Loader2 } from 'lucide-react';
 import QRCode from 'qrcode';
@@ -152,7 +152,7 @@ function StickerCard({ census, logoUrl }: { census: CensusSticker; logoUrl: stri
   );
 }
 
-export default function ImprimirStickersPage() {
+function ImprimirStickersContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [censuses, setCensuses] = useState<CensusSticker[]>([]);
@@ -412,5 +412,18 @@ export default function ImprimirStickersPage() {
         }
       `}</style>
     </>
+  );
+}
+
+export default function ImprimirStickersPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', gap: '12px', color: '#5A6E8E' }}>
+        <Loader2 style={{ width: 32, height: 32, animation: 'spin 1s linear infinite' }} />
+        <span>Cargando...</span>
+      </div>
+    }>
+      <ImprimirStickersContent />
+    </Suspense>
   );
 }
