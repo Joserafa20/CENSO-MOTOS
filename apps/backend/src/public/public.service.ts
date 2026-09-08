@@ -50,6 +50,28 @@ export class PublicService {
     };
   }
 
+  async findByCodigo(codigoCenso: string) {
+    const census = await this.prisma.census.findFirst({
+      where: {
+        codigoCenso: codigoCenso.toUpperCase().trim(),
+        estado: { in: ['FINALIZADO', 'CERTIFICADO_GENERADO'] },
+      },
+    });
+
+    if (!census) {
+      throw new NotFoundException('No se encontró un censo con este código');
+    }
+
+    return {
+      codigoCenso: census.codigoCenso,
+      placa: census.placa,
+      tipoVehiculo: census.tipoVehiculo,
+      actividad: census.actividad,
+      estado: census.estado,
+      fechaCenso: census.fechaCenso,
+    };
+  }
+
   async validateToken(token: string) {
     const certificate = await this.prisma.certificate.findUnique({
       where: { qrToken: token },

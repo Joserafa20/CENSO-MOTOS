@@ -27,6 +27,15 @@ export class PublicController {
     return this.publicService.findByPlaca(placa);
   }
 
+  @Get('censos/codigo/:codigo')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Verificar censo por código (público)' })
+  @ApiResponse({ status: 200, description: 'Censo encontrado' })
+  @ApiResponse({ status: 404, description: 'Censo no encontrado' })
+  async findByCodigo(@Param('codigo') codigo: string) {
+    return this.publicService.findByCodigo(codigo);
+  }
+
   @Get('validar/:token')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Validar certificado por token QR (público)' })
