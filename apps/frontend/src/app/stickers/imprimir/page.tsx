@@ -390,6 +390,12 @@ function ImprimirStickersContent() {
         @page { size: A4; margin: 10mm; }
 
         @media print {
+          /* Force browsers to print background colors and images */
+          * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+          }
           body { background: white !important; }
           .screen-controls { display: none !important; }
           .sheet { padding-top: 0 !important; padding-bottom: 0 !important; display: block !important; }
