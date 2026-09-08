@@ -35,10 +35,11 @@ export default function DashboardWrapper({ children }: Readonly<{ children: Reac
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!initialized) return;
     settingsApi.get().then((res) => {
       if (res.data?.logoUrl) setLogoUrl(res.data.logoUrl);
     }).catch(() => {});
-  }, []);
+  }, [initialized]);
 
   useEffect(() => {
     useAuthStore.getState().initialize();

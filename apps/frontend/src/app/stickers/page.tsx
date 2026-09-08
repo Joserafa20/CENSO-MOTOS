@@ -46,15 +46,27 @@ function StickersPage() {
   const fetchCensuses = async () => {
     setIsLoading(true);
     try {
-      const params = new URLSearchParams();
-      if (search) params.append('search', search);
-      params.append('page', currentPage.toString());
-      params.append('limit', '20');
-      // Only approved censuses
-      params.append('estado', 'FINALIZADO');
-      const response = await apiClient.get(`/api/censuses/admin/all?${params.toString()}`);
-      setCensuses(response.data.data);
-      setMeta(response.data.meta);
+      const base = new URLSearchParams();
+      if (search) base.append('search', search);
+      base.append('page', currentPage.toString());
+      base.append('limit', '50');
+
+      // Fetch both approved states in parallel (backend only accepts one estado at a time)
+      const [r1, r2] = await Promise.all([
+        apiClient.get(`/api/censuses/admin/all?${base.toString()}&estado=FINALIZADO`),
+        apiClient.get(`/api/censuses/admin/all?${base.toString()}&estado=CERTIFICADO_GENERADO`),
+      ]);
+
+      const merged: ApprovedCensus[] = [
+        ...(r1.data.data ?? []),
+        ...(r2.data.data ?? []),
+      ];
+      // Sort by date descending
+      merged.sort((a, b) => new Date(b.fechaCenso).getTime() - new Date(a.fechaCenso).getTime());
+
+      const total = (r1.data.meta?.total ?? 0) + (r2.data.meta?.total ?? 0);
+      setCensuses(merged);
+      setMeta({ total, page: currentPage, limit: 50, totalPages: Math.ceil(total / 50) });
     } catch {
       toast.error('Error al cargar los censos aprobados');
     } finally {
