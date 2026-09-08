@@ -339,18 +339,18 @@ function ImprimirStickersContent() {
         .field-label { font-size: 7px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: #5A6E8E; padding-left: 2px; }
         .placa-box {
           border: 1.5px solid #1B3C73; border-radius: 5px;
-          padding: 3px 8px 4px; background: rgba(27,60,115,.04);
-          position: relative; overflow: hidden;
+          padding: 3px 6px 4px; background: rgba(27,60,115,.04);
+          position: relative; overflow: visible;
         }
         .tricolor {
-          position: absolute; top: 0; left: 0; right: 0; height: 3px;
+          position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 3px 3px 0 0;
           background: linear-gradient(90deg, #FCD116 0% 33.3%, #003087 33.3% 66.6%, #CE1126 66.6% 100%);
         }
         .placa-value {
           font-family: 'Oswald', 'Arial Narrow', Arial, sans-serif;
-          font-size: 36px; font-weight: 700; color: #0C1B36;
-          letter-spacing: .04em; line-height: 1; padding-top: 4px;
-          font-variant-numeric: tabular-nums;
+          font-size: 30px; font-weight: 700; color: #0C1B36;
+          letter-spacing: .02em; line-height: 1; padding-top: 4px;
+          font-variant-numeric: tabular-nums; white-space: nowrap;
         }
         .consec-row, .actividad-row {
           display: flex; align-items: center; gap: 4px;
@@ -414,7 +414,7 @@ function ImprimirStickersContent() {
             box-shadow: none !important;
             break-inside: avoid !important;
           }
-          .placa-value { font-size: 9mm !important; }
+          .placa-value { font-size: 7.5mm !important; white-space: nowrap !important; }
         }
       `}</style>
     </>
