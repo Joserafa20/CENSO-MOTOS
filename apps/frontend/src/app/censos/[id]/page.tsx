@@ -5,7 +5,7 @@ import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import {
   ArrowLeft,
   FileText,
-  Download,
+  Printer,
   Edit2,
   CheckCircle,
   Clock,
@@ -53,7 +53,6 @@ function CensusDetailPage() {
   const { user } = useAuthStore();
   const [census, setCensus] = useState<CensusDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isDownloading, setIsDownloading] = useState(false);
   const [isApproving, setIsApproving] = useState(false);
 
   useEffect(() => {
@@ -84,30 +83,6 @@ function CensusDetailPage() {
       alert('Error al aprobar el censo. Intenta de nuevo.');
     } finally {
       setIsApproving(false);
-    }
-  };
-
-  const handleDownloadCertificate = async () => {
-    if (!census?.certificate) return;
-
-    setIsDownloading(true);
-    try {
-      const response = await apiClient.get(
-        `/api/certificates/${census.id}/download`,
-        { responseType: 'blob' }
-      );
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `certificado-${census.codigoCenso}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error('Error downloading certificate', err);
-    } finally {
-      setIsDownloading(false);
     }
   };
 
@@ -256,14 +231,13 @@ function CensusDetailPage() {
               {isApproving ? 'Aprobando...' : 'Aprobar Censo'}
             </button>
           )}
-          {census.certificate && user?.rol === 'ADMIN' && (
+          {(census.estado === 'FINALIZADO' || census.estado === 'CERTIFICADO_GENERADO') && user?.rol === 'ADMIN' && (
             <button
-              onClick={handleDownloadCertificate}
-              disabled={isDownloading}
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+              onClick={() => router.push(`/stickers/imprimir?ids=${census.id}`)}
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
             >
-              <Download className="h-4 w-4 mr-2" />
-              {isDownloading ? 'Descargando...' : 'Descargar Certificado'}
+              <Printer className="h-4 w-4 mr-2" />
+              Imprimir Sticker
             </button>
           )}
         </div>
@@ -309,21 +283,6 @@ function CensusDetailPage() {
         </div>
       </div>
 
-      {/* Certificate Info */}
-      {census.certificate && (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
-          <div className="px-4 py-3 border-b border-gray-200 bg-gray-50">
-            <h2 className="text-lg font-semibold text-gray-900">Certificado</h2>
-          </div>
-          <div className="p-4">
-            <dl className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <DetailItem label="Código Certificado" value={census.certificate.codigoCertificado} />
-              <DetailItem label="Fecha Generación" value={formatValue('fechaCenso', census.certificate.fechaGeneracion)} />
-              <DetailItem label="Estado" value={census.certificate.estado === 'VALIDO' ? 'Válido' : 'Anulado'} />
-            </dl>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
