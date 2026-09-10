@@ -27,13 +27,10 @@ export class CreateCensusDto {
   tipoVehiculo: string;
 
   @ApiPropertyOptional({
-    enum: ['MOTOTAXI', 'FAMILIAR'],
-    description: 'Actividad (requerida para MOTOCICLETA)',
+    description: 'Actividad (requerida para MOTOCICLETA y MOTOCARRO, texto libre para MOTOCARRO)',
   })
   @IsOptional()
-  @IsEnum(['MOTOTAXI', 'FAMILIAR'], {
-    message: 'Actividad inválida. Debe ser MOTOTAXI o FAMILIAR',
-  })
+  @IsString({ message: 'La actividad debe ser un texto válido' })
   actividad?: string;
 
   @ApiPropertyOptional({

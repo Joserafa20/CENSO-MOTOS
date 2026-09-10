@@ -541,15 +541,13 @@ function NuevoCensoPage() {
                     <label htmlFor="actividad-motocarro" className="block text-sm font-medium text-gray-700 mb-2">
                       Actividad
                     </label>
-                    <select
+                    <input
+                      type="text"
                       id="actividad-motocarro"
                       {...step2Form.register('actividad')}
+                      placeholder="Ej: Carga, Pasajeros, Mensajería..."
                       className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg text-gray-900"
-                    >
-                      <option value="">Seleccionar actividad</option>
-                      <option value="MOTOTAXI">Mototaxi</option>
-                      <option value="FAMILIAR">Familiar</option>
-                    </select>
+                    />
                     {step2Form.formState.errors.actividad && (
                       <p className="mt-1 text-sm text-red-600">
                         {step2Form.formState.errors.actividad.message}
