@@ -209,41 +209,36 @@ function ConsultarPage() {
             />
           </div>
 
-          {/* Certificate section */}
-          {censusInfo.certificate ? (
-            <div className="mx-6 my-5 rounded-xl bg-blue-50 border border-blue-100 p-4">
+          {/* Verification section */}
+          {(censusInfo.estado === 'FINALIZADO' || censusInfo.estado === 'CERTIFICADO_GENERADO') ? (
+            <div className="mx-6 my-5 rounded-xl bg-green-50 border border-green-100 p-4">
               <div className="flex items-center gap-2 mb-3">
-                <FileText className="w-4 h-4 text-blue-600" />
-                <span className="text-sm font-semibold text-blue-800">Certificado disponible</span>
+                <FileText className="w-4 h-4 text-green-600" />
+                <span className="text-sm font-semibold text-green-800">Censo aprobado y verificable</span>
               </div>
-              <p className="text-xs text-blue-600 mb-1">
-                Código: <span className="font-mono font-bold">{censusInfo.certificate.codigoCertificado}</span>
-              </p>
-              <p className="text-xs text-blue-500 mb-4">
-                Generado el {format(new Date(censusInfo.certificate.fechaGeneracion), "d 'de' MMMM 'de' yyyy", { locale: es })}
+              <p className="text-xs text-green-600 mb-4">
+                Código: <span className="font-mono font-bold">{censusInfo.codigoCenso}</span>
               </p>
               <a
-                href={`/validar/${censusInfo.certificate.codigoCertificado}`}
+                href={`/verificar/${censusInfo.codigoCenso}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-lg transition-colors"
               >
                 <ExternalLink className="w-4 h-4" />
-                Ver certificado
+                Ver verificación
               </a>
             </div>
           ) : (
-            censusInfo.estado === 'FINALIZADO' && (
-              <div className="mx-6 my-5 rounded-xl bg-gray-50 border border-gray-200 p-4">
-                <div className="flex items-center gap-2 mb-1">
-                  <FileText className="w-4 h-4 text-gray-400" />
-                  <span className="text-sm font-semibold text-gray-600">Certificado no generado aún</span>
-                </div>
-                <p className="text-xs text-gray-500">
-                  Tu censo está finalizado. El certificado será generado por la Alcaldía próximamente.
-                </p>
+            <div className="mx-6 my-5 rounded-xl bg-gray-50 border border-gray-200 p-4">
+              <div className="flex items-center gap-2 mb-1">
+                <FileText className="w-4 h-4 text-gray-400" />
+                <span className="text-sm font-semibold text-gray-600">Censo pendiente de aprobación</span>
               </div>
-            )
+              <p className="text-xs text-gray-500">
+                Tu censo está en proceso. Una vez aprobado por la Alcaldía podrás verificarlo aquí.
+              </p>
+            </div>
           )}
 
           {/* Footer note */}
