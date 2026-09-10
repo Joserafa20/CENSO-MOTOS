@@ -344,7 +344,7 @@ function ImprimirStickersContent() {
         }
         .tricolor {
           position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 3px 3px 0 0;
-          background: linear-gradient(90deg, #FCD116 0% 33.3%, #003087 33.3% 66.6%, #CE1126 66.6% 100%);
+          background: linear-gradient(90deg, #2D7A30 0% 33.3%, #FFFFFF 33.3% 66.6%, #FCD116 66.6% 100%);
         }
         .placa-value {
           font-family: 'Oswald', 'Arial Narrow', Arial, sans-serif;
