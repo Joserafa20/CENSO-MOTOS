@@ -575,7 +575,7 @@ function NuevoCensoPage() {
                     )}
                   </div>
 
-                  {step2Form.watch('propiedad') === 'PAGA_TARIFA' && (
+                  {step2Form.watch('propiedad') && (
                     <div>
                       <label htmlFor="documentosAlDia" className="block text-sm font-medium text-gray-700 mb-2">
                         Documentos al Día
@@ -594,6 +594,27 @@ function NuevoCensoPage() {
                       {step2Form.formState.errors.documentosAlDia && (
                         <p className="mt-1 text-sm text-red-600">
                           {step2Form.formState.errors.documentosAlDia.message}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {step2Form.watch('propiedad') === 'PAGA_TARIFA' && (
+                    <div>
+                      <label htmlFor="valorTarifa-motocarro" className="block text-sm font-medium text-gray-700 mb-2">
+                        Valor de Tarifa
+                      </label>
+                      <input
+                        type="number"
+                        id="valorTarifa-motocarro"
+                        {...step2Form.register('valorTarifa', { valueAsNumber: true })}
+                        placeholder="Ej: 5000"
+                        min="0"
+                        className="w-full h-12 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg text-gray-900"
+                      />
+                      {step2Form.formState.errors.valorTarifa && (
+                        <p className="mt-1 text-sm text-red-600">
+                          {step2Form.formState.errors.valorTarifa.message}
                         </p>
                       )}
                     </div>
