@@ -26,6 +26,14 @@ export default function VerificarPage() {
   const [data, setData] = useState<CensusPublic | null>(null);
   const [notFound, setNotFound] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/public/settings`)
+      .then((r) => r.json())
+      .then((d) => { if (d?.logoUrl) setLogoUrl(d.logoUrl); })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (!codigo) return;
@@ -58,26 +66,13 @@ export default function VerificarPage() {
           alignItems: 'center', gap: 12,
         }}>
           <div style={{ width: 52, height: 52, flexShrink: 0 }}>
-            <svg viewBox="0 0 80 95" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%', filter: 'drop-shadow(0 1px 3px rgba(0,0,0,.5))' }}>
-              <defs><clipPath id="escudo-v"><path d="M8,4 L72,4 L72,52 C72,64 56,78 40,88 C24,78 8,64 8,52 Z"/></clipPath></defs>
-              <ellipse cx="4" cy="22" rx="3.5" ry="6" transform="rotate(-35 4 22)" fill="#3A7A2A"/><ellipse cx="2" cy="31" rx="3.5" ry="6" transform="rotate(-22 2 31)" fill="#2D6A22"/><ellipse cx="2" cy="41" rx="3.5" ry="6" transform="rotate(-10 2 41)" fill="#3A7A2A"/><ellipse cx="4" cy="51" rx="3.5" ry="6" transform="rotate(5 4 51)" fill="#2D6A22"/>
-              <ellipse cx="76" cy="22" rx="3.5" ry="6" transform="rotate(35 76 22)" fill="#3A7A2A"/><ellipse cx="78" cy="31" rx="3.5" ry="6" transform="rotate(22 78 31)" fill="#2D6A22"/><ellipse cx="78" cy="41" rx="3.5" ry="6" transform="rotate(10 78 41)" fill="#3A7A2A"/><ellipse cx="76" cy="51" rx="3.5" ry="6" transform="rotate(-5 76 51)" fill="#2D6A22"/>
-              <rect x="8" y="4" width="64" height="29" fill="#1B3C73" clipPath="url(#escudo-v)"/>
-              <rect x="8" y="33" width="64" height="28" fill="#2D7A30" clipPath="url(#escudo-v)"/>
-              <path d="M8,61 Q20,57 32,61 Q44,65 56,61 Q64,58 72,61 L72,90 L8,90 Z" fill="#1B4B8C" clipPath="url(#escudo-v)"/>
-              <line x1="8" y1="33" x2="72" y2="33" stroke="#C49A28" strokeWidth="1.5" clipPath="url(#escudo-v)"/>
-              <line x1="8" y1="61" x2="72" y2="61" stroke="#C49A28" strokeWidth="1" clipPath="url(#escudo-v)"/>
-              <g clipPath="url(#escudo-v)" stroke="#FCD116" strokeWidth="1.8" strokeLinecap="round"><line x1="40" y1="8" x2="40" y2="5"/><line x1="40" y1="30" x2="40" y2="33"/><line x1="27" y1="19" x2="24" y2="19"/><line x1="53" y1="19" x2="56" y2="19"/><line x1="31" y1="11" x2="29" y2="9"/><line x1="49" y1="11" x2="51" y2="9"/><line x1="31" y1="27" x2="29" y2="29"/><line x1="49" y1="27" x2="51" y2="29"/></g>
-              <circle cx="40" cy="19" r="9" fill="#FCD116" clipPath="url(#escudo-v)"/><circle cx="40" cy="19" r="5.5" fill="#F5A800" clipPath="url(#escudo-v)"/><circle cx="40" cy="19" r="2" fill="#FCD116" clipPath="url(#escudo-v)"/>
-              <path d="M38,60 C38.5,52 39,43 40,33 C41,43 41.5,52 42,60 Z" fill="#7A4E1A" clipPath="url(#escudo-v)"/>
-              <path d="M40,36 Q35,28 30,25 Q35,31 40,36" fill="#1A7A22" clipPath="url(#escudo-v)"/><path d="M40,36 Q45,28 50,25 Q45,31 40,36" fill="#22882A" clipPath="url(#escudo-v)"/>
-              <path d="M40,38 Q31,34 25,32 Q32,37 40,38" fill="#1A7A22" clipPath="url(#escudo-v)"/><path d="M40,38 Q49,34 55,32 Q48,37 40,38" fill="#22882A" clipPath="url(#escudo-v)"/>
-              <circle cx="37.5" cy="39" r="2.2" fill="#C49A28" clipPath="url(#escudo-v)"/><circle cx="42" cy="38" r="2.2" fill="#B8850A" clipPath="url(#escudo-v)"/>
-              <path d="M8,4 L72,4 L72,52 C72,64 56,78 40,88 C24,78 8,64 8,52 Z" fill="none" stroke="#7A6020" strokeWidth="3.5"/>
-              <path d="M8,4 L72,4 L72,52 C72,64 56,78 40,88 C24,78 8,64 8,52 Z" fill="none" stroke="#C49A28" strokeWidth="2"/>
-              <path d="M12,89 Q40,97 68,89 L65,94 Q40,101 15,94 Z" fill="#C49A28"/>
-              <text x="40" y="97.5" fontFamily="Arial,sans-serif" fontSize="5.2" fontWeight="bold" fill="#0C1B36" textAnchor="middle" letterSpacing="0.8">SABANALARGA</text>
-            </svg>
+            {logoUrl ? (
+              <img src={logoUrl} alt="Escudo Alcaldía" style={{ width: 52, height: 52, objectFit: 'contain', filter: 'drop-shadow(0 1px 3px rgba(0,0,0,.4))' }} />
+            ) : (
+              <div style={{ width: 52, height: 52, borderRadius: '50%', background: 'rgba(255,255,255,.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ fontSize: 26 }}>🏛️</span>
+              </div>
+            )}
           </div>
           <div>
             <p style={{ margin: 0, fontSize: 11, color: 'rgba(255,255,255,.6)', textTransform: 'uppercase', letterSpacing: '.08em' }}>

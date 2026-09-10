@@ -50,6 +50,16 @@ export class PublicService {
     };
   }
 
+  async getPublicSettings() {
+    const config = await this.prisma.configuracionAlcaldia.findFirst();
+    return {
+      logoUrl: config?.logoUrl ?? null,
+      nombre: config?.nombre ?? 'Alcaldía Municipal de Sabanalarga',
+      municipio: config?.municipio ?? 'Sabanalarga',
+      departamento: config?.departamento ?? 'Atlántico',
+    };
+  }
+
   async findByCodigo(codigoCenso: string) {
     const census = await this.prisma.census.findFirst({
       where: {

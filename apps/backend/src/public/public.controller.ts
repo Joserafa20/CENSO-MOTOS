@@ -18,6 +18,13 @@ import { PublicService } from './public.service';
 export class PublicController {
   constructor(private readonly publicService: PublicService) {}
 
+  @Get('settings')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Configuración pública de la alcaldía (logo, nombre)' })
+  async getSettings() {
+    return this.publicService.getPublicSettings();
+  }
+
   @Get('censos/placa/:placa')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Buscar censo por placa (público)' })
