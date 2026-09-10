@@ -121,6 +121,10 @@ function StickerCard({ census, logoUrl }: { census: CensusSticker; logoUrl: stri
               <span className="consec-label">Consecutivo</span>
               <span className="consec-value">{census.codigoCenso}</span>
             </div>
+            <div className="actividad-row">
+              <span className="consec-label">Tipo</span>
+              <span className="actividad-value">{TIPO_LABEL[census.tipoVehiculo] ?? census.tipoVehiculo}</span>
+            </div>
             {census.actividad && (
               <div className="actividad-row">
                 <span className="consec-label">Actividad</span>

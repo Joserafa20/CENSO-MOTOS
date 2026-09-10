@@ -148,10 +148,19 @@ export default function VerificarPage() {
                 </p>
               </div>
 
+              {/* Tipo de vehículo destacado */}
+              <div style={{
+                background: '#EFF6FF', border: '1.5px solid #BFDBFE', borderRadius: 8,
+                padding: '10px 14px', marginBottom: 12,
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              }}>
+                <span style={{ fontSize: 12, fontWeight: 600, color: '#3B82F6', textTransform: 'uppercase', letterSpacing: '.06em' }}>Tipo de Vehículo</span>
+                <span style={{ fontSize: 15, fontWeight: 800, color: '#1D4ED8' }}>{TIPO[data.tipoVehiculo] ?? data.tipoVehiculo}</span>
+              </div>
+
               {/* Fields */}
               {[
                 ['Código Censo', data.codigoCenso],
-                ['Tipo', TIPO[data.tipoVehiculo] ?? data.tipoVehiculo],
                 ['Actividad', data.actividad ? (ACTIVIDAD[data.actividad] ?? data.actividad) : '—'],
                 ['Fecha de Censo', format(new Date(data.fechaCenso), "dd 'de' MMMM 'de' yyyy", { locale: es })],
               ].map(([label, value]) => (
