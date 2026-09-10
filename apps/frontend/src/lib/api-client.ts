@@ -29,21 +29,16 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-// Response interceptor: only treat 401 as a session-ending event when it
-// comes from an auth endpoint (/api/auth/*). Data endpoints (dashboard,
-// censuses, etc.) return 401 on transient Render cold-start hiccups and
-// should fail gracefully without logging the user out.
+// Response interceptor: any 401 means the token is invalid or expired —
+// clear the session and redirect to login. Render cold-starts produce 503
+// or a connection timeout, never a 401.
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401 && typeof window !== 'undefined') {
-      const url: string = error.config?.url ?? '';
-      const isAuthEndpoint = url.includes('/auth/');
-      if (isAuthEndpoint) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        window.dispatchEvent(new Event('auth:unauthorized'));
-      }
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.dispatchEvent(new Event('auth:unauthorized'));
     }
     return Promise.reject(error);
   },
