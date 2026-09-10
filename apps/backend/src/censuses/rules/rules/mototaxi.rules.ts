@@ -1,4 +1,4 @@
-import { ActividadMototaxi, Propiedad, Modalidad, Horario } from '@prisma/client';
+import { Propiedad, Modalidad, Horario } from '@prisma/client';
 
 import {
   ValidationResult,
@@ -7,7 +7,7 @@ import {
 
 interface MototaxiData {
   tipoVehiculo: 'MOTOCICLETA';
-  actividad: ActividadMototaxi;
+  actividad: string;
   propiedad?: Propiedad;
   modalidad?: Modalidad;
   valorTarifa?: number;

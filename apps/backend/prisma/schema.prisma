@@ -24,10 +24,6 @@ enum TipoVehiculo {
   MOTOCARRO
 }
 
-enum ActividadMototaxi {
-  MOTOTAXI
-  FAMILIAR
-}
 
 enum Propiedad {
   PROPIA
@@ -75,7 +71,7 @@ model Census {
   codigoCenso     String         @unique @map("codigo_censo")
   placa           String
   tipoVehiculo    TipoVehiculo   @map("tipo_vehiculo")
-  actividad       ActividadMototaxi?
+  actividad       String?
   propiedad       Propiedad?
   modalidad       Modalidad?
   valorTarifa     Decimal?       @map("valor_tarifa") @db.Decimal(10, 2)
