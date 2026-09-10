@@ -3,6 +3,7 @@ import {
   Post,
   Get,
   Put,
+  Delete,
   Body,
   Param,
   Query,
@@ -135,6 +136,16 @@ export class CensusesController {
       req.ip,
       req.headers['user-agent'],
     );
+  }
+
+  @Delete(':id')
+  @Roles('ADMIN')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Eliminar un censo (admin)' })
+  @ApiResponse({ status: 200, description: 'Censo eliminado' })
+  @ApiResponse({ status: 404, description: 'Censo no encontrado' })
+  async remove(@Param('id') id: string) {
+    return this.censusesService.remove(id);
   }
 
   @Get('admin/all')

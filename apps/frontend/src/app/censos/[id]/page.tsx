@@ -11,6 +11,7 @@ import {
   Clock,
   AlertCircle,
   ShieldCheck,
+  Trash2,
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -54,6 +55,7 @@ function CensusDetailPage() {
   const [census, setCensus] = useState<CensusDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isApproving, setIsApproving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (params.id) {
@@ -69,6 +71,24 @@ function CensusDetailPage() {
       console.error('Error fetching census', err);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDeleteCensus = async () => {
+    if (!census) return;
+    const confirmed = window.confirm(
+      `¿Estás seguro de eliminar el censo ${census.codigoCenso} (Placa: ${census.placa})?\n\nEsta acción no se puede deshacer.`
+    );
+    if (!confirmed) return;
+    setIsDeleting(true);
+    try {
+      await apiClient.delete(`/api/censuses/${census.id}`);
+      router.push(fromAprobar ? '/aprobar-censos' : '/censos');
+    } catch (err) {
+      console.error('Error eliminando censo', err);
+      alert('Error al eliminar el censo. Intenta de nuevo.');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -238,6 +258,16 @@ function CensusDetailPage() {
             >
               <Printer className="h-4 w-4 mr-2" />
               Imprimir Sticker
+            </button>
+          )}
+          {user?.rol === 'ADMIN' && (
+            <button
+              onClick={handleDeleteCensus}
+              disabled={isDeleting}
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 disabled:opacity-50"
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              {isDeleting ? 'Eliminando...' : 'Eliminar'}
             </button>
           )}
         </div>

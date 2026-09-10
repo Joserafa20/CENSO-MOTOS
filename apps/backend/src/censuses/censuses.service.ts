@@ -448,6 +448,19 @@ export class CensusesService {
     };
   }
 
+  async remove(id: string) {
+    const census = await this.prisma.census.findUnique({ where: { id } });
+    if (!census) {
+      throw new NotFoundException('Censo no encontrado');
+    }
+
+    // Delete related certificate first (FK constraint)
+    await this.prisma.certificate.deleteMany({ where: { censusId: id } });
+    await this.prisma.census.delete({ where: { id } });
+
+    return { message: `Censo ${census.codigoCenso} eliminado correctamente` };
+  }
+
   private async generateCodigoCenso(): Promise<string> {
     const year = new Date().getFullYear();
 
